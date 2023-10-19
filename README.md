@@ -1,7 +1,6 @@
 # individual_project
 
-A new Flutter project.
-
+Link widget tree: https://drive.google.com/file/d/12F5GMjhJjAUC6YuoiXUGXK39jVSrrhcw/view?usp=sharing
 ## Getting Started
 
 This project is a starting point for a Flutter application.
