@@ -1,38 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
+import 'package:individual_project/pages/tutors/widgets/feedback.dart';
+import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
 import 'package:provider/provider.dart';
 import 'package:country_icons/country_icons.dart';
-
-class StarRating extends StatefulWidget {
-  @override
-  _StarRatingState createState() => _StarRatingState();
-}
-
-class _StarRatingState extends State<StarRating> {
-  int rating = 0;
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(5, (index) {
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              rating = index + 1;
-            });
-          },
-          child: Icon(
-            index < rating ? Icons.star : Icons.star_border,
-            size: 36.0,
-            color: Colors.amber, // Star color
-          ),
-        );
-      }),
-    );
-  }
-}
 
 class TutorItem extends StatelessWidget {
   const TutorItem({
@@ -94,7 +67,7 @@ class TutorItem extends StatelessWidget {
                         Container(child: Text(this.country ?? ''))
                       ],
                     )),
-                StarRating(),
+                StarRating(size: 20),
                 Container(
                   alignment: Alignment.topLeft,
                   child: Wrap(

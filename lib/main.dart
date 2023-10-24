@@ -2,6 +2,8 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/login.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
+import 'package:individual_project/pages/tutors/tutor-detail.dart';
+import 'package:individual_project/pages/tutors/video.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
-        home: ListTutorsPage(),
+        home: TutorDetailPage(),
       ),
     );
   }
