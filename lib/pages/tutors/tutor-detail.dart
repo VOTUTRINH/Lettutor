@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:individual_project/pages/tutors/video.dart';
+import 'package:individual_project/pages/tutors/widgets/video.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
 import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
