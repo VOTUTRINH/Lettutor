@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:individual_project/pages/tutors/schedule/widgets/schedule-item.dart';
+import 'package:individual_project/pages/history/widgets/history-item.dart';
+import 'package:individual_project/pages/schedule/widgets/schedule-item.dart';
 import 'package:individual_project/services/models/booking-info.dart';
 import 'package:provider/provider.dart';
 
-class SchedulePage extends StatelessWidget {
+class HistoryPage extends StatelessWidget {
   Widget cell(value, background) {
     return Container(
         decoration: BoxDecoration(
@@ -31,7 +32,7 @@ class SchedulePage extends StatelessWidget {
                           Container(
                             padding: EdgeInsets.only(left: 8, right: 8),
                             child: SvgPicture.asset(
-                              'assets/images/calendar.svg',
+                              'assets/images/history.svg',
                               width: 120,
                               height: 120,
                             ),
@@ -43,7 +44,7 @@ class SchedulePage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Schedule",
+                                    "History",
                                     style: TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.w600),
@@ -62,11 +63,11 @@ class SchedulePage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         Text(
-                                          "Here is a list of the sessions you have booked",
+                                          "The following is a list of lessons you have attended",
                                           style: TextStyle(fontSize: 18),
                                         ),
                                         Text(
-                                            "You can track when the meeting starts, join the meeting with one click or can cancel the meeting before 2 hours",
+                                            "You can review the details of the lessons you have attended",
                                             style: TextStyle(fontSize: 18))
                                       ],
                                     ),
@@ -76,62 +77,10 @@ class SchedulePage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      padding: EdgeInsets.fromLTRB(30, 48, 30, 16),
-                      child: Column(
-                        children: [
-                          Container(
-                              alignment: Alignment.topLeft,
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: Text(
-                                "Latest Book",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w700),
-                              )),
-                          Table(
-                            border: TableBorder.all(),
-                            children: [
-                              TableRow(children: [
-                                TableCell(
-                                    child: cell("Name",
-                                        Color.fromARGB(255, 233, 225, 225))),
-                                TableCell(
-                                  child: cell("", Colors.white),
-                                ), // A file
-                              ]),
-                              TableRow(children: [
-                                TableCell(
-                                    child: cell("Page",
-                                        Color.fromARGB(255, 233, 225, 225))),
-                                TableCell(
-                                  child: cell("0", Colors.white),
-                                )
-                              ]),
-                              TableRow(children: [
-                                TableCell(
-                                    child: cell("Description",
-                                        Color.fromARGB(255, 233, 225, 225))),
-                                TableCell(
-                                  child: cell("", Colors.white),
-                                )
-                              ])
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.grey,
-                      thickness: 1.0,
-                      indent: 16,
-                      endIndent: 16,
-                    ),
-
                     // TODO; define list and pass data
                     Container(
                         padding: EdgeInsets.only(left: 30, right: 30),
-                        child: ScheduleItem())
+                        child: HistoryItem())
                   ],
                 ))));
   }
