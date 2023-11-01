@@ -2,6 +2,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/courses/course-detail.dart';
 import 'package:individual_project/pages/courses/courses.dart';
+import 'package:individual_project/pages/courses/topic-detail.dart';
 import 'package:individual_project/pages/history/history.dart';
 import 'package:individual_project/pages/login.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
-        home: CourseDetailPage(),
+        home: TopicDetailPage(),
       ),
     );
   }
