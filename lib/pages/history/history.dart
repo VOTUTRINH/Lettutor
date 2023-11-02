@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:individual_project/pages/history/widgets/history-item.dart';
 import 'package:individual_project/pages/schedule/widgets/schedule-item.dart';
 import 'package:individual_project/services/models/booking-info.dart';
+import 'package:individual_project/widgets/appBar.dart';
+import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class HistoryPage extends StatelessWidget {
@@ -18,10 +20,11 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(title: AppBarCustom()),
+        endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
-                margin: EdgeInsets.only(top: 70),
                 child: Column(
                   children: [
                     Container(

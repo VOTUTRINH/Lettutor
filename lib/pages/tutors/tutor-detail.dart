@@ -7,6 +7,8 @@ import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/services/models/tutor.dart';
 import 'package:individual_project/services/models/feedback.dart';
+import 'package:individual_project/widgets/appBar.dart';
+import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -79,10 +81,11 @@ class _TutorDetailPage extends State<TutorDetailPage> {
     final imageCountry = 'icons/flags/png/${tutor.country!.toLowerCase()}.png';
 
     return Scaffold(
+        appBar: AppBar(title: AppBarCustom()),
+        endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
-                margin: EdgeInsets.only(top: 70),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/pages/tutors/tutor-detail.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
 import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
@@ -30,7 +31,14 @@ class TutorItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Colors.grey)),
       child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TutorDetailPage(),
+              ),
+            );
+          },
           child: Padding(
             padding: EdgeInsets.all(20),
             child: Column(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/pages/courses/course-detail.dart';
 import 'package:individual_project/services/models/course.dart';
 
 class CourseCard extends StatefulWidget {
@@ -14,7 +15,12 @@ class _CourseCard extends State<CourseCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Handle the tap here
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CourseDetailPage(),
+          ),
+        );
       },
       child: Container(
         margin: EdgeInsets.all(20),

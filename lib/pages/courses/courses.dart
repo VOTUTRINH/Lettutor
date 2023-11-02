@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:individual_project/pages/courses/widgets/dropdown-input.dart';
 import 'package:individual_project/pages/courses/widgets/tab-menu.dart';
+import 'package:individual_project/widgets/appBar.dart';
+import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class CoursesPage extends StatelessWidget {
@@ -18,10 +20,11 @@ class CoursesPage extends StatelessWidget {
       "Intermediate"
     ];
     return Scaffold(
+        appBar: AppBar(title: AppBarCustom()),
+        endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
-                margin: EdgeInsets.only(top: 70),
                 child: Column(
                   children: [
                     Container(
