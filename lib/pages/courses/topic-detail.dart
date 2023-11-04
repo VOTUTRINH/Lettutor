@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:individual_project/pages/courses/widgets/topic_pdf.dart';
 import 'package:individual_project/services/models/course.dart';
+import 'package:individual_project/widgets/appBar.dart';
+import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class TopicDetailPage extends StatefulWidget {
@@ -46,10 +48,11 @@ class _TopicDetailPage extends State<TopicDetailPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+        appBar: AppBar(title: AppBarCustom()),
+        endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
-                margin: EdgeInsets.only(top: 70),
                 child: Column(children: [
                   Image.network(
                     this.course.imageUrl,

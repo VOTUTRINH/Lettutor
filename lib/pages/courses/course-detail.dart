@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:individual_project/pages/courses/topic-detail.dart';
 import 'package:individual_project/services/models/course.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
@@ -28,33 +29,6 @@ class CourseDetailPage extends StatelessWidget {
     "Shopping Habits"
   ];
 
-  Widget topicCard(index, content) {
-    return Container(
-        height: 140,
-        padding: EdgeInsets.only(left: 12, right: 12),
-        child: InkWell(
-          onTap: () {},
-          child: Container(
-            alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: Colors.grey, width: 1)),
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(index.toString() + '.'),
-                Text(
-                  content,
-                  style: TextStyle(fontSize: 16),
-                )
-              ],
-            ),
-          ),
-        ));
-  }
-
   Widget title(content) {
     return Container(
       alignment: Alignment.topLeft,
@@ -68,6 +42,40 @@ class CourseDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget topicCard(index, content) {
+      return Container(
+          height: 140,
+          padding: EdgeInsets.only(left: 12, right: 12),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TopicDetailPage(),
+                ),
+              );
+            },
+            child: Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: Colors.grey, width: 1)),
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(index.toString() + '.'),
+                  Text(
+                    content,
+                    style: TextStyle(fontSize: 16),
+                  )
+                ],
+              ),
+            ),
+          ));
+    }
+
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),

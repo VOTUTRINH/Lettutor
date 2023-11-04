@@ -147,34 +147,30 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                     rederListTag(tutor.languages!),
                     title("Specialties"),
                     rederListTag(tutor.specialties!),
-                    Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        child: Column(
-                          children: [
-                            title("Interests"),
-                            Container(
-                                alignment: Alignment.topLeft,
-                                margin: EdgeInsets.only(bottom: 7, left: 15),
-                                child: Text(tutor.interests!,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400)))
-                          ],
-                        )),
-                    Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        child: Column(
-                          children: [
-                            title("Teaching experience"),
-                            Container(
-                                alignment: Alignment.topLeft,
-                                margin: EdgeInsets.only(bottom: 7, left: 15),
-                                child: Text(tutor.experience!,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400)))
-                          ],
-                        )),
+
+                    ...[
+                      {"title": "Interests", "content": tutor.interests!},
+                      {
+                        "title": "Teaching experience",
+                        "content": tutor.experience
+                      }
+                    ]
+                        .map((e) => Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            child: Column(
+                              children: [
+                                title(e['title'] as String),
+                                Container(
+                                    alignment: Alignment.topLeft,
+                                    margin:
+                                        EdgeInsets.only(bottom: 7, left: 15),
+                                    child: Text(e['content'] as String,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400)))
+                              ],
+                            )))
+                        .toList(),
                     Container(
                       alignment: Alignment.topLeft,
                       child: title("Other review"),
