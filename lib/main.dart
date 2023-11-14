@@ -4,24 +4,32 @@ import 'package:individual_project/pages/courses/course-detail.dart';
 import 'package:individual_project/pages/courses/courses.dart';
 import 'package:individual_project/pages/courses/topic-detail.dart';
 import 'package:individual_project/pages/history/history.dart';
-import 'package:individual_project/pages/login.dart';
+import 'package:individual_project/pages/login/login.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
 import 'package:individual_project/pages/schedule/schedule.dart';
 import 'package:individual_project/pages/tutors/tutor-detail.dart';
 import 'package:individual_project/pages/tutors/widgets/video.dart';
+import 'package:individual_project/services/respository/account-repository.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final accountRepository = new AccountRepository();
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => accountRepository)
+      ],
       child: MaterialApp(
         title: 'Name',
         theme: ThemeData(
@@ -29,26 +37,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
         home: LoginPage(),
-      ),
-    );
-  }
-}
-
-class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-}
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-
-    return Scaffold(
-      body: Column(
-        children: [
-          Text('A random idea:'),
-          Text(appState.current.asLowerCase),
-        ],
       ),
     );
   }

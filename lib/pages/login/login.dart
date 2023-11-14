@@ -1,77 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/pages/login/widgets/banner.dart';
+import 'package:individual_project/pages/login/widgets/textField.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
+import 'package:individual_project/services/models/account.dart';
+import 'package:individual_project/services/respository/account-repository.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-abstract class AbstractInputWidget extends StatelessWidget {
-  final String title;
-  final String placeholder;
-  final double textPadding;
+class LoginPage extends StatefulWidget {
+  late bool isLogin;
 
-  AbstractInputWidget({
-    required this.title,
-    required this.placeholder,
-    this.textPadding = 8.0,
-  });
+  LoginPage({Key? key, this.isLogin = true}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(bottom: textPadding),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        TextField(
-          decoration: InputDecoration(
-            hintText: placeholder,
-            border: OutlineInputBorder(
-              // Set the border
-              borderRadius:
-                  BorderRadius.circular(10.0), // Set the border radius
-            ),
-          ),
-        ),
-      ],
+  _LoginPage createState() => _LoginPage();
+
+  void setIsLogin(bool isLogin) {
+    this.isLogin = isLogin;
+  }
+}
+
+class _LoginPage extends State<LoginPage> {
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
     );
   }
-}
 
-class CustomTextInputWidget extends AbstractInputWidget {
-  CustomTextInputWidget({
-    required String title,
-    required String placeholder,
-    double textPadding = 8.0, // Custom padding value
-  }) : super(
-          title: title,
-          placeholder: placeholder,
-          textPadding: textPadding,
-        );
-}
+  TextEditingController emailController = TextEditingController();
+  TextEditingController _textFieldController2 = TextEditingController();
 
-class LoginPage extends StatelessWidget {
-  Widget text(content, style, margin) {
-    return Container(
-        margin: margin,
-        child: Text(
-          content,
-          style: style,
-          textAlign: TextAlign.center,
-        ));
-  }
+  String email = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
     double vw4 = MediaQuery.of(context).size.width * 0.04;
     double vw6 = MediaQuery.of(context).size.width * 0.06;
+    AccountRepository accountRepository = context.watch<AccountRepository>();
+
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         body: SingleChildScrollView(
@@ -79,33 +50,20 @@ class LoginPage extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
               child: (Column(
                 children: [
-                  Container(
-                      child: Image.asset('assets/images/thumbnail_login.png'),
-                      margin: EdgeInsets.only(bottom: 30)),
+                  BannerV(),
                   Container(
                       padding: EdgeInsets.fromLTRB(vw6, vw4, vw6, vw4),
                       child: Column(
                         children: [
-                          text(
-                              "Say hello to your English tutors",
-                              TextStyle(
-                                  fontSize: 28,
-                                  color: Color.fromRGBO(0, 113, 240, 1),
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.5),
-                              EdgeInsets.only(bottom: 14)),
-                          text(
-                              "Become fluent faster through one on one video chat lessons tailored to your goals.",
-                              TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.5),
-                              EdgeInsets.fromLTRB(9, 7, 0, 7)),
                           Container(
                             margin: EdgeInsets.only(bottom: 20),
                             child: CustomTextInputWidget(
                               title: 'MAIL',
                               placeholder: 'mail@example.com',
+                              controller: emailController,
+                              onChanged: (value) {
+                                email = value;
+                              },
                             ),
                           ),
                           Container(
@@ -113,18 +71,28 @@ class LoginPage extends StatelessWidget {
                               child: CustomTextInputWidget(
                                 title: 'PASSWORD',
                                 placeholder: '',
+                                controller: _textFieldController2,
+                                onChanged: (value) {
+                                  password = value;
+                                },
                               )),
-                          Container(
-                              child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: text(
-                                      "Forgot Password? ",
-                                      TextStyle(
-                                          fontSize: 16,
-                                          color: Color.fromRGBO(0, 113, 240, 1),
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.5),
-                                      EdgeInsets.only(bottom: 14)))),
+                          if (widget.isLogin)
+                            Container(
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                        margin: EdgeInsets.only(bottom: 14),
+                                        child: InkWell(
+                                            onTap: () {},
+                                            child: Text(
+                                              "Forgot Password? ",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color.fromRGBO(
+                                                      0, 113, 240, 1),
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5),
+                                            ))))),
                           Container(
                               margin: EdgeInsets.only(bottom: 10),
                               height: 44,
@@ -132,12 +100,26 @@ class LoginPage extends StatelessWidget {
                                 Expanded(
                                     child: ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ListTutorsPage(),
-                                      ),
-                                    );
+                                    if (widget.isLogin) {
+                                      if (accountRepository.isExistedAccount(
+                                          email, password)) {
+                                        showSnackBar('Login Successful');
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ListTutorsPage(),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      if (!accountRepository.isExistedAccount(
+                                          email, password)) {
+                                        var account =
+                                            new Account(1, email, password);
+                                        accountRepository.add(account);
+                                      }
+                                    }
                                   },
                                   style: ButtonStyle(
                                     backgroundColor:
@@ -164,7 +146,7 @@ class LoginPage extends StatelessWidget {
                                     ),
                                   ),
                                   child: Text(
-                                    'LOG IN',
+                                    widget.isLogin ? "LOG IN" : "SIGN UP",
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w600),
@@ -214,13 +196,29 @@ class LoginPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                             Text("Not a member yet?"),
-                            Text("Sign up",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ))
+                            SizedBox(width: 5),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  widget.setIsLogin(!widget.isLogin);
+                                });
+                              },
+                              child: Text(widget.isLogin ? "Sign up" : "Log in",
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                  )),
+                            )
                           ])))
                 ],
               ))),
         ));
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    _textFieldController2.dispose();
+
+    super.dispose();
   }
 }
