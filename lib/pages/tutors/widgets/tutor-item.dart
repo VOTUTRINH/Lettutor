@@ -34,7 +34,9 @@ class _TutorItemState extends State<TutorItem> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TutorDetailPage(),
+                builder: (context) => TutorDetailPage(
+                  tutor: widget.tutor,
+                ),
               ),
             );
           },
@@ -110,7 +112,16 @@ class _TutorItemState extends State<TutorItem> {
                 Container(
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TutorDetailPage(
+                            tutor: widget.tutor,
+                          ),
+                        ),
+                      );
+                    },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(

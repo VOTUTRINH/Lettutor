@@ -14,7 +14,7 @@ class Tag extends StatefulWidget {
 class _TagState extends State<Tag> {
   @override
   Widget build(BuildContext context) {
-    final TutorFilter tutorFilter = context.watch<TutorFilter>();
+    final TutorFilter tutorFilter = Provider.of<TutorFilter>(context);
 
     return InkWell(
         onTap: () {

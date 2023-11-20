@@ -11,6 +11,7 @@ import 'package:individual_project/pages/tutors/tutor-detail.dart';
 import 'package:individual_project/pages/tutors/widgets/video.dart';
 import 'package:individual_project/services/models/tutor.dart';
 import 'package:individual_project/services/respository/account-repository.dart';
+import 'package:individual_project/services/respository/tutor-filter.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -81,11 +82,14 @@ class _MyAppState extends State<MyApp> {
         isFavorite: true),
   ];
 
+  final TutorFilter tutorFilter = new TutorFilter();
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => accountRepository),
+        ChangeNotifierProvider(create: (context) => tutorFilter),
         Provider(create: (context) => tutorList)
       ],
       child: MaterialApp(

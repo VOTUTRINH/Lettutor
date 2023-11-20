@@ -9,20 +9,14 @@ import 'package:provider/provider.dart';
 class ListTutorsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final TutorFilter tutorFilter = new TutorFilter();
-
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => tutorFilter),
-        ],
-        child: Scaffold(
-            appBar: AppBar(title: AppBarCustom()),
-            endDrawer: DrawerCustom(),
-            body: SingleChildScrollView(
-                child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
-                    child: Column(
-                      children: <Widget>[UpcomingLesson(), ListTutorsView()],
-                    )))));
+    return Scaffold(
+        appBar: AppBar(title: AppBarCustom()),
+        endDrawer: DrawerCustom(),
+        body: SingleChildScrollView(
+            child: Container(
+                padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
+                child: Column(
+                  children: <Widget>[UpcomingLesson(), ListTutorsView()],
+                ))));
   }
 }

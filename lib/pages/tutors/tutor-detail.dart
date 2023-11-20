@@ -14,31 +14,13 @@ import 'package:video_player/video_player.dart';
 
 /// Stateful widget to fetch and then display video content
 class TutorDetailPage extends StatefulWidget {
-  const TutorDetailPage({super.key});
-
+  const TutorDetailPage({super.key, required this.tutor});
+  final Tutor tutor;
   @override
   _TutorDetailPage createState() => _TutorDetailPage();
 }
 
 class _TutorDetailPage extends State<TutorDetailPage> {
-  final Tutor tutor = Tutor(
-      userId: "1",
-      avatar:
-          "https://cdn.tuoitre.vn/thumb_w/730/2019/5/8/avatar-publicitystill-h2019-1557284559744252594756.jpg",
-      name: "Vo Tu Trinh",
-      description:
-          "I am passionate about running and fitness, I often compete in trail/mountain running events and I love pushing myself. I am training to one day take part in ultra-endurance events. I also enjoy watching rugby on the weekends, reading and watching podcasts on Youtube. My most memorable life experience would be living in and traveling around Southeast Asia.",
-      specialties:
-          "English for kids,English for Business,Conversational,STARTERS",
-      education: "BA",
-      experience: "I have more than 10 years of teaching english experience",
-      languages: "English",
-      interests:
-          "I loved the weather, the scenery and the laid-back lifestyle of the locals.",
-      country: "VN",
-      video:
-          "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
-      rating: 4);
   final FeedBack feedBack = FeedBack(
       id: "1",
       userId: "Vo Tu Trinh",
@@ -54,7 +36,10 @@ class _TutorDetailPage extends State<TutorDetailPage> {
         alignment: Alignment.topLeft,
         child: Wrap(
           children: listTag
-              .map((tag) => Tag(text: tag))
+              .map((tag) => Tag(
+                    text: tag,
+                    isSelected: true,
+                  ))
               .toList(), // Create a Tag widget for each tag
         ),
       );
@@ -78,7 +63,8 @@ class _TutorDetailPage extends State<TutorDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final imageCountry = 'icons/flags/png/${tutor.country!.toLowerCase()}.png';
+    final imageCountry =
+        'icons/flags/png/${widget.tutor.country!.toLowerCase()}.png';
 
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
@@ -92,7 +78,7 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                     Row(
                       children: [
                         CircularImage(
-                          imageUrl: tutor.avatar!,
+                          imageUrl: widget.tutor.avatar!,
                           size: 110,
                         ),
                         Container(
@@ -102,12 +88,12 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                               children: [
                                 Container(
                                     child: Text(
-                                  tutor.name!,
+                                  widget.tutor.name!,
                                   style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600),
                                 )),
-                                StarRating(rating: tutor.rating!),
+                                StarRating(rating: widget.tutor.rating!),
                                 Row(
                                   children: [
                                     Image.asset(
@@ -117,7 +103,7 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                                       height: 22,
                                     ),
                                     SizedBox(width: 5),
-                                    Text(tutor.country!)
+                                    Text(widget.tutor.country!)
                                   ],
                                 )
                               ],
@@ -127,10 +113,10 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                     Container(
                         padding: EdgeInsets.fromLTRB(0, 15, 50, 0),
                         margin: EdgeInsets.only(bottom: 15),
-                        child: Text(tutor.description!)),
+                        child: Text(widget.tutor.description ?? "")),
                     //TODO: favorite + reporting
 
-                    VideoPlayerScreen(link: tutor.video),
+                    VideoPlayerScreen(link: widget.tutor.video),
                     Container(
                         margin: EdgeInsets.only(bottom: 20, top: 35),
                         child: Column(
@@ -139,20 +125,23 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                             Container(
                                 alignment: Alignment.topLeft,
                                 margin: EdgeInsets.only(bottom: 7, left: 15),
-                                child: Text(tutor.education!,
+                                child: Text(widget.tutor.education!,
                                     style: TextStyle(fontSize: 15)))
                           ],
                         )),
                     title("Languages"),
-                    rederListTag(tutor.languages!),
+                    rederListTag(widget.tutor.languages!),
                     title("Specialties"),
-                    rederListTag(tutor.specialties!),
+                    rederListTag(widget.tutor.specialties!),
 
                     ...[
-                      {"title": "Interests", "content": tutor.interests!},
+                      {
+                        "title": "Interests",
+                        "content": widget.tutor.interests!
+                      },
                       {
                         "title": "Teaching experience",
-                        "content": tutor.experience
+                        "content": widget.tutor.experience
                       }
                     ]
                         .map((e) => Container(
