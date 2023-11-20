@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/filter.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
+import 'package:individual_project/services/models/tutor.dart';
+import 'package:individual_project/services/respository/tutor-filter.dart';
 import 'package:provider/provider.dart';
 
 class ListTutorsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final tutorList = Provider.of<List<Tutor>>(context);
+    final tutorFilter = Provider.of<TutorFilter>(context);
+
     return Container(
         padding: EdgeInsets.fromLTRB(30, 33, 30, 49),
         child: Column(
@@ -19,14 +24,36 @@ class ListTutorsView extends StatelessWidget {
                   "Recommended Tutors",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 )),
-            TutorItem(
-              userId: "1",
-              avatar: "avd",
-              name: "Tring",
-              country: "VN",
-              description:
-                  "I am passionate about running and fitness, I often compete in trail/mountain running events and I love pushing myself. I am training to one day take part in ultra-endurance events. I also enjoy watching rugby on the weekends, reading and watching podcasts on Youtube. My most memorable life experience would be living in and traveling around Southeast Asia.",
-            )
+
+            // List of tutors sorted by favorite and rating
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: tutorList.length,
+                  itemBuilder: (context, index) {
+                    // Sort the tutorList by favorite and rating
+                    tutorList.sort((a, b) {
+                      if (a.isFavorite != b.isFavorite) {
+                        return a.isFavorite! ? -1 : 1;
+                      } else {
+                        return b.rating!.compareTo(a.rating ?? 0);
+                      }
+                    });
+
+                    // Filter the tutorList by specialties
+                    if (tutorFilter.getspecialties() != '') {
+                      if (tutorFilter.isValidTutor(tutorList[index])) {
+                        return TutorItem(tutor: tutorList[index]);
+                      } else {
+                        return Container();
+                      }
+                    }
+
+                    return TutorItem(tutor: tutorList[index]);
+                  }),
+            ),
           ],
         ));
   }

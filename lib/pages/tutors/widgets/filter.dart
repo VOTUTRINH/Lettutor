@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
+import 'package:individual_project/services/respository/tutor-filter.dart';
 import 'package:provider/provider.dart';
 
 class Input extends StatelessWidget {
-  const Input({this.placeholder, this.width = 150});
+  const Input(
+      {this.placeholder, this.width = 150, this.onChanged, this.controller});
 
   final String? placeholder;
   final double? width;
+  final Function? onChanged;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +33,21 @@ class Input extends StatelessWidget {
           hintText: this.placeholder,
           hintStyle: TextStyle(fontSize: 14),
         ),
+        controller: controller,
+        onChanged: onChanged as void Function(String)?,
       ),
     );
   }
 }
 
-class Filter extends StatelessWidget {
+class Filter extends StatefulWidget {
+  @override
+  _FilterState createState() => _FilterState();
+}
+
+class _FilterState extends State<Filter> {
+  final TextEditingController nameController = new TextEditingController();
+  final TextEditingController countryController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     final tags = [
@@ -48,6 +61,9 @@ class Filter extends StatelessWidget {
       "PET",
       "IELTS"
     ];
+
+    final tutorFilter = Provider.of<TutorFilter>(context);
+
     return Container(
       alignment: Alignment.topLeft,
       margin: EdgeInsets.only(top: 10),
@@ -63,8 +79,21 @@ class Filter extends StatelessWidget {
         Row(children: [
           Flexible(
               child: Wrap(children: [
-            Input(placeholder: "Enter tutor name", width: 160),
-            Input(placeholder: "Select tutor country", width: 130)
+            Input(
+              placeholder: "Enter tutor name",
+              width: 160,
+              controller: nameController,
+              onChanged: (value) {
+                tutorFilter.setName(value);
+              },
+            ),
+            Input(
+                placeholder: "Select tutor country",
+                width: 130,
+                controller: countryController,
+                onChanged: (value) {
+                  tutorFilter.setCountry(value);
+                })
           ]))
         ]),
         Container(
@@ -79,8 +108,14 @@ class Filter extends StatelessWidget {
           Flexible(
               child: Wrap(children: [
             //ToDO: CALENDAR ...
-            Input(placeholder: "Select a day", width: 120),
-            Input(placeholder: "Select time", width: 140)
+            Input(
+              placeholder: "Select a day",
+              width: 120,
+            ),
+            Input(
+              placeholder: "Select time",
+              width: 140,
+            ),
           ]))
         ]),
         Container(
@@ -91,5 +126,12 @@ class Filter extends StatelessWidget {
         ),
       ]),
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    countryController.dispose();
+    super.dispose();
   }
 }

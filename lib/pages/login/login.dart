@@ -32,7 +32,7 @@ class _LoginPage extends State<LoginPage> {
   }
 
   TextEditingController emailController = TextEditingController();
-  TextEditingController _textFieldController2 = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   String email = '';
   String password = '';
@@ -71,7 +71,7 @@ class _LoginPage extends State<LoginPage> {
                               child: CustomTextInputWidget(
                                 title: 'PASSWORD',
                                 placeholder: '',
-                                controller: _textFieldController2,
+                                controller: passwordController,
                                 onChanged: (value) {
                                   password = value;
                                 },
@@ -118,6 +118,7 @@ class _LoginPage extends State<LoginPage> {
                                         var account =
                                             new Account(1, email, password);
                                         accountRepository.add(account);
+                                        showSnackBar('Sign up Successful');
                                       }
                                     }
                                   },
@@ -217,7 +218,7 @@ class _LoginPage extends State<LoginPage> {
   @override
   void dispose() {
     emailController.dispose();
-    _textFieldController2.dispose();
+    passwordController.dispose();
 
     super.dispose();
   }

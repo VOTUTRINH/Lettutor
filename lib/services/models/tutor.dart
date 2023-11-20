@@ -12,7 +12,6 @@ class Tutor {
   final String? country;
   final int? rating;
   final bool? isFavorite;
-  // final List<FeedBack>? feedbacks;
 
   Tutor({
     required this.userId,
@@ -31,13 +30,6 @@ class Tutor {
   });
 
   factory Tutor.fromJson(Map<String, dynamic> json) {
-    // List<FeedBack> feedbacks = [];
-    // if (json['feedbacks'] != null) {
-    //   for (var v in json['feedbacks']) {
-    //     feedbacks.add(FeedBack.fromJson(v));
-    //   }
-    // }
-
     return Tutor(
       userId: json['userId'] ?? json['id'],
       avatar: json['avatar'],

@@ -5,28 +5,27 @@ import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
+import 'package:individual_project/services/models/tutor.dart';
 import 'package:provider/provider.dart';
 import 'package:country_icons/country_icons.dart';
 
-class TutorItem extends StatelessWidget {
+class TutorItem extends StatefulWidget {
   const TutorItem({
     super.key,
-    required this.userId,
-    this.avatar,
-    this.name,
-    this.country,
-    this.description,
+    required this.tutor,
   });
 
-  final String userId;
-  final String? avatar;
-  final String? name;
-  final String? country;
-  final String? description;
+  final Tutor tutor;
 
+  @override
+  _TutorItemState createState() => _TutorItemState();
+}
+
+class _TutorItemState extends State<TutorItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Colors.grey)),
@@ -71,29 +70,41 @@ class TutorItem extends StatelessWidget {
                     alignment: Alignment.topLeft,
                     child: Column(
                       children: [
-                        Container(child: Text(this.name ?? '')),
-                        Container(child: Text(this.country ?? ''))
+                        Container(
+                            alignment: Alignment.topLeft,
+                            child: Text(widget.tutor.name ?? '',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600))),
+                        Container(
+                            child: Row(
+                          children: [
+                            Image.asset(
+                              'icons/flags/png/${widget.tutor.country!.toLowerCase()}.png',
+                              package: 'country_icons',
+                              width: 22,
+                              height: 22,
+                            ),
+                            SizedBox(width: 5),
+                            Text(widget.tutor.country!)
+                          ],
+                        ))
                       ],
                     )),
                 StarRating(size: 20),
                 Container(
                   alignment: Alignment.topLeft,
                   child: Wrap(
-                    children: [
-                      "ALL",
-                      "English for kids",
-                      "English for Business",
-                      "Conversational",
-                      "STARTERS"
-                    ]
-                        .map((tag) => Tag(text: tag))
+                    children: widget.tutor.specialties!
+                        .split(',')
+                        .map((tag) => Tag(text: tag, isSelected: true))
                         .toList(), // Create a Tag widget for each tag
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 14, bottom: 14),
                   child: Wrap(
-                    children: [Text(this.description ?? '')],
+                    children: [Text(widget.tutor.description ?? '')],
                   ),
                 ),
                 Container(
