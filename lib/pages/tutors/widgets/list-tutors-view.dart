@@ -4,12 +4,13 @@ import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
 import 'package:individual_project/services/models/tutor.dart';
 import 'package:individual_project/services/respository/tutor-filter.dart';
+import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:provider/provider.dart';
 
 class ListTutorsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final tutorList = Provider.of<List<Tutor>>(context);
+    final tutorRepository = Provider.of<TutorRepository>(context);
     final tutorFilter = Provider.of<TutorFilter>(context);
 
     return Container(
@@ -31,10 +32,10 @@ class ListTutorsView extends StatelessWidget {
               child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: tutorList.length,
+                  itemCount: tutorRepository.getTutorList().length,
                   itemBuilder: (context, index) {
                     // Sort the tutorList by favorite and rating
-                    tutorList.sort((a, b) {
+                    tutorRepository.getTutorList().sort((a, b) {
                       if (a.isFavorite != b.isFavorite) {
                         return a.isFavorite! ? -1 : 1;
                       } else {
@@ -44,14 +45,17 @@ class ListTutorsView extends StatelessWidget {
 
                     // Filter the tutorList by specialties
                     if (tutorFilter.getspecialties() != '') {
-                      if (tutorFilter.isValidTutor(tutorList[index])) {
-                        return TutorItem(tutor: tutorList[index]);
+                      if (tutorFilter.isValidTutor(
+                          tutorRepository.getTutorList()[index])) {
+                        return TutorItem(
+                            tutor: tutorRepository.getTutorList()[index]);
                       } else {
                         return Container();
                       }
                     }
 
-                    return TutorItem(tutor: tutorList[index]);
+                    return TutorItem(
+                        tutor: tutorRepository.getTutorList()[index]);
                   }),
             ),
           ],

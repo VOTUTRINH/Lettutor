@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/pages/tutors/widgets/calendar_booking.dart';
 import 'package:individual_project/pages/tutors/widgets/video.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
 import 'package:individual_project/pages/tutors/widgets/feedback.dart';
@@ -7,6 +8,7 @@ import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/services/models/tutor.dart';
 import 'package:individual_project/services/models/feedback.dart';
+import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +67,7 @@ class _TutorDetailPage extends State<TutorDetailPage> {
   Widget build(BuildContext context) {
     final imageCountry =
         'icons/flags/png/${widget.tutor.country!.toLowerCase()}.png';
-
+    final tutorRepository = Provider.of<TutorRepository>(context);
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
@@ -110,11 +112,30 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                             )),
                       ],
                     ),
+                    //TODO: favorite + reporting
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            widget.tutor.isFavorite = !widget.tutor.isFavorite!;
+                            tutorRepository.update(widget.tutor);
+                          });
+                        },
+                        child: Icon(
+                          widget.tutor.isFavorite!
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: widget.tutor.isFavorite!
+                              ? Colors.red
+                              : Colors.blue,
+                          size: 36.0,
+                        ),
+                      )
+                    ]),
                     Container(
                         padding: EdgeInsets.fromLTRB(0, 15, 50, 0),
                         margin: EdgeInsets.only(bottom: 15),
                         child: Text(widget.tutor.description ?? "")),
-                    //TODO: favorite + reporting
 
                     VideoPlayerScreen(link: widget.tutor.video),
                     Container(
@@ -164,7 +185,24 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                       alignment: Alignment.topLeft,
                       child: title("Other review"),
                     ),
-                    FeedBackUI(feedback: feedBack)
+                    FeedBackUI(feedback: feedBack),
+                    Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(top: 20, bottom: 20),
+                        child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CalendarBooking(tutor: widget.tutor),
+                                ),
+                              );
+                            },
+                            child: Text("List booking",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400)))) // List
                   ],
                 ))));
   }

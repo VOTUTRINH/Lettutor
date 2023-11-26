@@ -1,3 +1,5 @@
+import 'package:individual_project/services/models/booking.dart';
+
 class Tutor {
   final String userId;
   final String? avatar;
@@ -11,7 +13,8 @@ class Tutor {
   final String? interests;
   final String? country;
   final int? rating;
-  final bool? isFavorite;
+  bool? isFavorite;
+  final List<Booking>? bookings;
 
   Tutor({
     required this.userId,
@@ -27,6 +30,7 @@ class Tutor {
     this.interests,
     this.country,
     this.isFavorite,
+    this.bookings,
   });
 
   factory Tutor.fromJson(Map<String, dynamic> json) {

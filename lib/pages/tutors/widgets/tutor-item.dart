@@ -6,6 +6,7 @@ import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
 import 'package:individual_project/services/models/tutor.dart';
+import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:provider/provider.dart';
 import 'package:country_icons/country_icons.dart';
 
@@ -24,6 +25,9 @@ class TutorItem extends StatefulWidget {
 class _TutorItemState extends State<TutorItem> {
   @override
   Widget build(BuildContext context) {
+    final TutorRepository tutorRepository =
+        Provider.of<TutorRepository>(context);
+
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -57,11 +61,18 @@ class _TutorItemState extends State<TutorItem> {
                       right: 10.0,
                       child: InkWell(
                         onTap: () {
-                          // Handle onTap event
+                          setState(() {
+                            widget.tutor.isFavorite = !widget.tutor.isFavorite!;
+                            tutorRepository.update(widget.tutor);
+                          });
                         },
                         child: Icon(
-                          Icons.favorite_border_outlined,
-                          color: Colors.blue,
+                          widget.tutor.isFavorite!
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: widget.tutor.isFavorite!
+                              ? Colors.red
+                              : Colors.blue,
                           size: 36.0,
                         ),
                       ),
