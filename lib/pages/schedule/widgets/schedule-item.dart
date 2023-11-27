@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/schedule/widgets/Info.dart';
+import 'package:individual_project/pages/schedule/widgets/text-field-dialog.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
+import 'package:individual_project/services/models/booking.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleItem extends StatelessWidget {
+  ScheduleItem({Key? key, required this.booking}) : super(key: key);
+  final Booking booking;
+
+  formatdate(date) {
+    return DateFormat('EEE, d MMM yy').format(date);
+  }
+
+  formatTime(date) {
+    return DateFormat('H:mm').format(date);
+  }
+
   Widget cell(value, background) {
     return Container(
         decoration: BoxDecoration(
@@ -57,7 +71,7 @@ class ScheduleItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Sun, 29 Oct 23",
+                    Text(this.formatdate(this.booking.from),
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w700)),
                     Text("1 lesson", style: TextStyle(fontSize: 14))
@@ -72,7 +86,11 @@ class ScheduleItem extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text("01:30 - 01:55", style: TextStyle(fontSize: 18)),
+                      Text(
+                          this.formatTime(this.booking.from) +
+                              '-' +
+                              this.formatTime(this.booking.to),
+                          style: TextStyle(fontSize: 18)),
                       Container(
                           padding: EdgeInsets.fromLTRB(15, 4, 0, 4),
                           child: button("Cancel", Colors.redAccent, Colors.red,
@@ -92,21 +110,16 @@ class ScheduleItem extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("Request for lesson", softWrap: true),
-                                InkWell(
-                                  onTap: () {
-                                    // show popup
-                                  },
-                                  child: Container(
+                                Container(
                                     alignment: Alignment.topLeft,
-                                    child: Text('Edit Request',
-                                        style: TextStyle(color: Colors.blue)),
-                                  ),
-                                )
+                                    child: TextFieldDialog(
+                                      link: 'Edit Request',
+                                    )),
                               ],
                             )),
                         Container(
                           padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
-                          child: Text("Vo Tu Trinhhhhhhhhhhhhhhh"),
+                          child: Text(this.booking.note ?? ''),
                         )
                       ]))
                 ],

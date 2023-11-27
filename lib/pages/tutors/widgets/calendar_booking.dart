@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/services/models/booking.dart';
 import 'package:individual_project/services/models/tutor.dart';
+import 'package:individual_project/services/respository/booking-repository.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ class CalendarBooking extends StatefulWidget {
 class _CalendarBookingState extends State<CalendarBooking> {
   @override
   Widget build(BuildContext context) {
-    final tutorRepository = Provider.of<TutorRepository>(context);
+    final bookingRepository = Provider.of<BookingRepository>(context);
 
     return Scaffold(
       appBar: AppBar(title: Text("List Booking")),
@@ -28,8 +29,8 @@ class _CalendarBookingState extends State<CalendarBooking> {
           child: SfCalendar(
             view: CalendarView.week,
             dataSource: BookingDataSource(
-              widget.tutor.bookings ?? [],
-            ),
+                bookingRepository.getBookingByTutorId(widget.tutor.userId!) ??
+                    []),
             monthViewSettings: const MonthViewSettings(
               appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
             ),
@@ -41,7 +42,7 @@ class _CalendarBookingState extends State<CalendarBooking> {
               if (details.targetElement == CalendarElement.appointment) {
                 final Booking booking = details.appointments!.first;
                 if (!booking.isBooked!) {
-                  _showNotePopup(context, booking, tutorRepository);
+                  _showNotePopup(context, booking, bookingRepository);
                 }
               }
             },
@@ -96,7 +97,7 @@ class _CalendarBookingState extends State<CalendarBooking> {
   void _showNotePopup(
     BuildContext context,
     Booking booking,
-    TutorRepository tutorRepository,
+    BookingRepository bookingRepository,
   ) {
     String note = booking.note ?? '';
     TextEditingController noteController =
@@ -120,8 +121,9 @@ class _CalendarBookingState extends State<CalendarBooking> {
             TextButton(
               onPressed: () {
                 booking.note = note ?? '';
+                booking.userId = '1';
                 booking.isBooked = true;
-                tutorRepository.updateBooking(widget.tutor.userId!, booking);
+                bookingRepository.update(booking);
 
                 Navigator.of(context).pop();
               },

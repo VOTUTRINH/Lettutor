@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:individual_project/services/models/booking.dart';
 
 class Tutor {
@@ -15,6 +16,7 @@ class Tutor {
   final int? rating;
   bool? isFavorite;
   final List<Booking>? bookings;
+  final List<Feedback>? feedbacks;
 
   Tutor({
     required this.userId,
@@ -31,6 +33,7 @@ class Tutor {
     this.country,
     this.isFavorite,
     this.bookings,
+    this.feedbacks,
   });
 
   factory Tutor.fromJson(Map<String, dynamic> json) {

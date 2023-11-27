@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:individual_project/pages/schedule/widgets/schedule-item.dart';
 import 'package:individual_project/services/models/booking-info.dart';
+import 'package:individual_project/services/respository/booking-repository.dart';
+import 'package:individual_project/widgets/appBar.dart';
+import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class SchedulePage extends StatelessWidget {
@@ -16,7 +19,10 @@ class SchedulePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bookingRepository = Provider.of<BookingRepository>(context);
     return Scaffold(
+        appBar: AppBar(title: AppBarCustom()),
+        endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
@@ -127,11 +133,14 @@ class SchedulePage extends StatelessWidget {
                       indent: 16,
                       endIndent: 16,
                     ),
-
-                    // TODO; define list and pass data
-                    Container(
-                        padding: EdgeInsets.only(left: 30, right: 30),
-                        child: ScheduleItem())
+                    ...bookingRepository
+                        .getBookingByUserId('1')
+                        .map((e) => Container(
+                            padding: EdgeInsets.only(left: 30, right: 30),
+                            child: ScheduleItem(
+                              booking: e,
+                            )))
+                        .toList()
                   ],
                 ))));
   }

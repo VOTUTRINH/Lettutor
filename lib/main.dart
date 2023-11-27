@@ -1,17 +1,8 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:individual_project/pages/courses/course-detail.dart';
-import 'package:individual_project/pages/courses/courses.dart';
-import 'package:individual_project/pages/courses/topic-detail.dart';
-import 'package:individual_project/pages/history/history.dart';
-import 'package:individual_project/pages/login/login.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
-import 'package:individual_project/pages/schedule/schedule.dart';
-import 'package:individual_project/pages/tutors/tutor-detail.dart';
-import 'package:individual_project/pages/tutors/widgets/calendar_booking.dart';
-import 'package:individual_project/pages/tutors/widgets/video.dart';
-import 'package:individual_project/services/models/tutor.dart';
 import 'package:individual_project/services/respository/account-repository.dart';
+import 'package:individual_project/services/respository/booking-repository.dart';
+import 'package:individual_project/services/respository/feedback-repository.dart';
 import 'package:individual_project/services/respository/tutor-filter.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:provider/provider.dart';
@@ -27,9 +18,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final accountRepository = new AccountRepository();
-
   final tutorRepository = new TutorRepository();
-
+  final feedbackRepository = new FeedbackRepository();
+  final bookingRepository = new BookingRepository();
   final TutorFilter tutorFilter = new TutorFilter();
 
   @override
@@ -39,6 +30,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => accountRepository),
         ChangeNotifierProvider(create: (context) => tutorRepository),
         ChangeNotifierProvider(create: (context) => tutorFilter),
+        ChangeNotifierProvider(create: (context) => feedbackRepository),
+        ChangeNotifierProvider(create: (context) => bookingRepository),
       ],
       child: MaterialApp(
         title: 'Name',

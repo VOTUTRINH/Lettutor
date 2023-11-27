@@ -8,6 +8,7 @@ import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/services/models/tutor.dart';
 import 'package:individual_project/services/models/feedback.dart';
+import 'package:individual_project/services/respository/feedback-repository.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
@@ -68,6 +69,7 @@ class _TutorDetailPage extends State<TutorDetailPage> {
     final imageCountry =
         'icons/flags/png/${widget.tutor.country!.toLowerCase()}.png';
     final tutorRepository = Provider.of<TutorRepository>(context);
+    final feedbackRepository = Provider.of<FeedbackRepository>(context);
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
@@ -185,7 +187,10 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                       alignment: Alignment.topLeft,
                       child: title("Other review"),
                     ),
-                    FeedBackUI(feedback: feedBack),
+                    ...feedbackRepository
+                        .getFeedbacksByTutorId(widget.tutor.userId)
+                        .map((e) => FeedBackUI(feedback: e))
+                        .toList(),
                     Container(
                         alignment: Alignment.center,
                         margin: EdgeInsets.only(top: 20, bottom: 20),

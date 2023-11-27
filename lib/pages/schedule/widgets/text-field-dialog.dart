@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 
 class TextFieldDialog extends StatelessWidget {
   TextEditingController _textController = TextEditingController();
+  TextFieldDialog({Key? key, this.link}) : super(key: key);
 
+  String? link;
   _showPopup(BuildContext context) {
     showDialog(
       context: context,
@@ -68,7 +70,7 @@ class TextFieldDialog extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.all(16.0),
-        child: Text('Tap here to show popup with Text Area'),
+        child: Text(this.link ?? "", style: TextStyle(color: Colors.blue)),
       ),
     );
   }
