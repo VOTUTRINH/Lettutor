@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/schedule/widgets/Info.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
+import 'package:individual_project/services/models/booking.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HistoryItem extends StatelessWidget {
+  HistoryItem({Key? key, required this.booking}) : super(key: key);
+  final Booking booking;
+
   Widget cell(value, background) {
     return Container(
         decoration: BoxDecoration(
@@ -42,6 +47,14 @@ class HistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    formatdate(date) {
+      return DateFormat('EEE, d MMM yy').format(date);
+    }
+
+    formatTime(date) {
+      return DateFormat('H:mm').format(date);
+    }
+
     return Container(
         padding: EdgeInsets.all(16),
         margin: EdgeInsets.only(top: 16, bottom: 16),
@@ -57,7 +70,7 @@ class HistoryItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Sun, 29 Oct 23",
+                    Text(formatdate(this.booking.from),
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w700)),
                     Text("1 day ago", style: TextStyle(fontSize: 14))
@@ -69,7 +82,11 @@ class HistoryItem extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(color: Colors.white),
                 child: Wrap(children: [
-                  Text("Lesson Time: 01:00 - 01:55",
+                  Text(
+                      "Lesson Time: " +
+                          formatTime(this.booking.from) +
+                          '-' +
+                          formatTime(this.booking.to),
                       style: TextStyle(fontSize: 20))
                 ])),
             Container(
@@ -94,7 +111,7 @@ class HistoryItem extends StatelessWidget {
                             )),
                         Container(
                           padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
-                          child: Text("Vo Tu Trinhhhhhhhhhhhhhhh"),
+                          child: Text(this.booking.note ?? 'No note'),
                         ),
                         Container(
                             padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
@@ -108,7 +125,7 @@ class HistoryItem extends StatelessWidget {
                             )),
                         Container(
                           padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
-                          child: Text("Vo Tu Trinhhhhhhhhhhhhhhh"),
+                          child: Text("No Review"),
                         )
                       ]))
                 ],

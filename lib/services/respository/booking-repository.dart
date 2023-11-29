@@ -11,6 +11,7 @@ class BookingRepository extends ChangeNotifier {
         userId: '1',
         from: DateTime(2023, 11, 26, 9),
         to: DateTime(2023, 11, 26, 9, 30),
+        note: "I want to learn about Flutter",
         isBooked: true),
     Booking(
         id: '2',

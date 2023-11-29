@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:individual_project/pages/history/widgets/history-item.dart';
 import 'package:individual_project/pages/schedule/widgets/schedule-item.dart';
 import 'package:individual_project/services/models/booking-info.dart';
+import 'package:individual_project/services/respository/booking-repository.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,8 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bookingRepository = Provider.of<BookingRepository>(context);
+
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
@@ -81,9 +84,14 @@ class HistoryPage extends StatelessWidget {
                       ),
                     ),
                     // TODO; define list and pass data
-                    Container(
-                        padding: EdgeInsets.only(left: 30, right: 30),
-                        child: HistoryItem())
+                    ...bookingRepository
+                        .getHistoryBookingByUserId('1')
+                        .map((e) => Container(
+                            padding: EdgeInsets.only(left: 30, right: 30),
+                            child: HistoryItem(
+                              booking: e,
+                            )))
+                        .toList()
                   ],
                 ))));
   }
