@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/services/respository/booking-repository.dart';
 import 'package:provider/provider.dart';
 
-class UpcomingLesson extends StatelessWidget {
+class UpcomingLesson extends StatefulWidget {
+  @override
+  _UpcomingLessonState createState() => _UpcomingLessonState();
+}
+
+class _UpcomingLessonState extends State<UpcomingLesson> {
   // TODO: Set it is input
-  final timeNextLesson = "Thu, 26 Oct 23 03:30 - 03:55 ";
-  final timeStartIn = "(starts in 81:42:07)";
+  late String timeNextLesson = "";
   @override
   Widget build(BuildContext context) {
+    final bookingRepsitory = Provider.of<BookingRepository>(context);
+
     return Row(children: [
       Expanded(
           child: Container(
@@ -41,7 +48,9 @@ class UpcomingLesson extends StatelessWidget {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        this.timeNextLesson,
+                                        bookingRepsitory
+                                                .getNextLessonTime('1') ??
+                                            "",
                                         style: TextStyle(
                                             fontSize: 20, color: Colors.white),
                                       ),
@@ -81,10 +90,10 @@ class UpcomingLesson extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Container(
-                        child: Text("Total lesson time is 507 hours 55 minutes",
-                            style:
-                                TextStyle(fontSize: 16, color: Colors.white)))
+                    // Container(
+                    //     child: Text("Total lesson time is 507 hours 55 minutes",
+                    //         style:
+                    //             TextStyle(fontSize: 16, color: Colors.white)))
                   ],
                 ),
               )))

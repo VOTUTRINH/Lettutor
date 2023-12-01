@@ -18,7 +18,9 @@ class _CourseCard extends State<CourseCard> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CourseDetailPage(),
+            builder: (context) => CourseDetailPage(
+              course: widget.course,
+            ),
           ),
         );
       },

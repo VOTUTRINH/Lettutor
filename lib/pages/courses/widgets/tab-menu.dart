@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/pages/courses/widgets/course-card.dart';
 import 'package:individual_project/pages/courses/widgets/list-course.dart';
 import 'package:individual_project/services/models/course.dart';
+import 'package:individual_project/services/respository/courses-repository.dart';
+import 'package:provider/provider.dart';
 
 class NestedTabBar extends StatefulWidget {
   final String outerTab;
@@ -33,26 +35,9 @@ class _NestedTabBarState extends State<NestedTabBar>
 
   @override
   Widget build(BuildContext context) {
-    List<Course> listCourses = [
-      Course(
-          id: "1",
-          name: "Life in the Internet Age",
-          description:
-              "Let's discuss how technology is changing the way we live",
-          imageUrl:
-              "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e",
-          level: "Intermediate",
-          numberLessons: 9),
-      Course(
-          id: "1",
-          name: "Life in the Internet Age",
-          description:
-              "Let's discuss how technology is changing the way we live",
-          imageUrl:
-              "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e",
-          level: "Intermediate",
-          numberLessons: 9),
-    ];
+    final CoursesRepository coursesRepository =
+        Provider.of<CoursesRepository>(context);
+    List<Course> listCourses = coursesRepository.getListCourses();
     return Container(
         child: Column(
       children: [

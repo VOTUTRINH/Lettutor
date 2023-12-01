@@ -6,16 +6,16 @@ import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
-class CourseDetailPage extends StatelessWidget {
-  Course course = Course(
-      id: "1",
-      name: "Life in the Internet Age",
-      description: "Let's discuss how technology is changing the way we live",
-      imageUrl:
-          "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e",
-      level: "Intermediate",
-      numberLessons: 9);
+class CourseDetailPage extends StatefulWidget {
+  CourseDetailPage({Key? key, this.course}) : super(key: key);
 
+  @override
+  _CoursePageDetailState createState() => _CoursePageDetailState();
+
+  final Course? course;
+}
+
+class _CoursePageDetailState extends State<CourseDetailPage> {
   List<String> topics = [
     "Foods You Love",
     "Your Job",
@@ -51,7 +51,9 @@ class CourseDetailPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => TopicDetailPage(),
+                  builder: (context) => TopicDetailPage(
+                    course: widget.course,
+                  ),
                 ),
               );
             },
@@ -76,7 +78,6 @@ class CourseDetailPage extends StatelessWidget {
           ));
     }
 
-    // TODO: implement build
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
@@ -106,7 +107,7 @@ class CourseDetailPage extends StatelessWidget {
                               topRight: Radius.circular(12),
                             ),
                             child: Image.network(
-                              this.course.imageUrl,
+                              widget.course!.imageUrl,
                             ),
                           ),
                           Container(
@@ -119,7 +120,7 @@ class CourseDetailPage extends StatelessWidget {
                                   alignment: Alignment.topLeft,
                                   margin: EdgeInsets.only(bottom: 8),
                                   child: Text(
-                                    this.course.name,
+                                    widget.course!.name,
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,
@@ -132,7 +133,7 @@ class CourseDetailPage extends StatelessWidget {
                                   alignment: Alignment.topLeft,
                                   margin: EdgeInsets.only(bottom: 24),
                                   child: Text(
-                                    this.course.description,
+                                    widget.course!.description,
                                     style: TextStyle(fontSize: 12),
                                   ),
                                 ),
@@ -200,7 +201,7 @@ class CourseDetailPage extends StatelessWidget {
                               Icon(Icons.group_add_outlined,
                                   color: Colors.blue),
                               SizedBox(width: 5),
-                              Text(course.level,
+                              Text(widget.course!.level,
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500))

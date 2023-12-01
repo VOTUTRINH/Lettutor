@@ -1,3 +1,5 @@
+import 'package:individual_project/services/models/topic.dart';
+
 class Course {
   late String id;
   late String name;
@@ -5,6 +7,7 @@ class Course {
   late String imageUrl;
   late String level;
   late int numberLessons;
+  late List<Topic> topics;
 
   Course({
     required this.id,
@@ -13,6 +16,7 @@ class Course {
     required this.imageUrl,
     required this.level,
     required this.numberLessons,
+    this.topics = const [],
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {

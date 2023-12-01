@@ -104,7 +104,11 @@ class _TutorItemState extends State<TutorItem> {
                         ))
                       ],
                     )),
-                StarRating(size: 20),
+                StarRating(
+                  size: 20,
+                  rating: widget.tutor.rating,
+                  isTap: false,
+                ),
                 Container(
                   alignment: Alignment.topLeft,
                   child: Wrap(

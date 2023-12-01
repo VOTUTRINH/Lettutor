@@ -25,7 +25,6 @@ class _CalendarBookingState extends State<CalendarBooking> {
       body: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Container(
-          width: 600,
           child: SfCalendar(
             view: CalendarView.week,
             dataSource: BookingDataSource(
@@ -78,11 +77,12 @@ class _CalendarBookingState extends State<CalendarBooking> {
       children: bookings
           .map((booking) => Text(
                 booking.isBlocked!
-                    ? "Blocked"
+                    ? "Block"
                     : booking.isBooked!
                         ? "Booked"
                         : "Book",
                 style: TextStyle(
+                  fontSize: 10,
                   color: booking.isBlocked!
                       ? Colors.grey
                       : booking.isBooked!

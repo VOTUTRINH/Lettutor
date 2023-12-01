@@ -7,35 +7,15 @@ import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class TopicDetailPage extends StatefulWidget {
-  const TopicDetailPage({Key? key}) : super(key: key);
+  const TopicDetailPage({Key? key, this.course}) : super(key: key);
 
   @override
   State<TopicDetailPage> createState() => _TopicDetailPage();
+
+  final Course? course;
 }
 
 class _TopicDetailPage extends State<TopicDetailPage> {
-  Course course = Course(
-      id: "1",
-      name: "Life in the Internet Age",
-      description: "Let's discuss how technology is changing the way we live",
-      imageUrl:
-          "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e",
-      level: "Intermediate",
-      numberLessons: 9);
-
-  List<String> topics = [
-    "Foods You Love",
-    "Your Job",
-    "Playing and Watching Sports",
-    "The Best Pet",
-    "Having Fun in Your Free Time",
-    "Your Daily Routine",
-    "Childhood Memories",
-    "Your Family Members",
-    "Your Hometown",
-    "Shopping Habits"
-  ];
-
   int topicActive = 0;
 
   void setActiveTopic(int index) {
@@ -55,7 +35,7 @@ class _TopicDetailPage extends State<TopicDetailPage> {
                 padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
                 child: Column(children: [
                   Image.network(
-                    this.course.imageUrl,
+                    widget.course!.imageUrl,
                   ),
                   Container(
                       padding: EdgeInsets.all(24),
@@ -66,7 +46,7 @@ class _TopicDetailPage extends State<TopicDetailPage> {
                             alignment: Alignment.topLeft,
                             margin: EdgeInsets.only(bottom: 22),
                             child: Text(
-                              this.course.name,
+                              widget.course!.name,
                               style: TextStyle(
                                   fontSize: 22, fontWeight: FontWeight.w600),
                             ),
@@ -76,7 +56,7 @@ class _TopicDetailPage extends State<TopicDetailPage> {
                             margin: EdgeInsets.only(bottom: 8),
                             padding: EdgeInsets.only(left: 10),
                             child: Text(
-                              this.course.description,
+                              widget.course!.description,
                               style: TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w500),
                             ),
@@ -90,8 +70,7 @@ class _TopicDetailPage extends State<TopicDetailPage> {
                                   fontSize: 22, fontWeight: FontWeight.w600),
                             ),
                           ),
-                          ...this
-                              .topics
+                          ...widget.course!.topics
                               .asMap()
                               .entries
                               .map((e) => (InkWell(
@@ -102,9 +81,8 @@ class _TopicDetailPage extends State<TopicDetailPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => TopicPdfViewer(
-                                            url:
-                                                "https://api.app.lettutor.com/file/be4c3df8-3b1b-4c8f-a5cc-75a8e2e6626afileYour%20Job.pdf",
-                                            title: "TEST PDF",
+                                            url: e.value.pdfUrl!,
+                                            title: e.value.title!,
                                           ),
                                         ),
                                       );
@@ -128,7 +106,7 @@ class _TopicDetailPage extends State<TopicDetailPage> {
                                           Container(
                                               margin: EdgeInsets.fromLTRB(
                                                   0, 10, 0, 10),
-                                              child: Text(e.value + '.'))
+                                              child: Text(e.value.title! + '.'))
                                         ],
                                       ),
                                     ),
