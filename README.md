@@ -1,6 +1,8 @@
 # individual_project
 
 Link widget tree: https://drive.google.com/file/d/12F5GMjhJjAUC6YuoiXUGXK39jVSrrhcw/view?usp=sharing
+
+Link demo milestone-2: https://www.youtube.com/watch?v=YWR_nLUq0SA
 ## Getting Started
 
 This project is a starting point for a Flutter application.
