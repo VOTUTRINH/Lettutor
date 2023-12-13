@@ -5,7 +5,7 @@ import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
-import 'package:individual_project/services/models/tutor.dart';
+import 'package:individual_project/models/tutor.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:provider/provider.dart';
 import 'package:country_icons/country_icons.dart';

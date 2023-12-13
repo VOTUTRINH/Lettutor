@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:individual_project/services/models/booking.dart';
+import 'package:individual_project/models/booking.dart';
 
 class Tutor {
   final String userId;

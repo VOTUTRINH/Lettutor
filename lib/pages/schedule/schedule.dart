@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:individual_project/pages/schedule/widgets/schedule-item.dart';
-import 'package:individual_project/services/models/booking-info.dart';
+import 'package:individual_project/models/booking-info.dart';
 import 'package:individual_project/services/respository/booking-repository.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';

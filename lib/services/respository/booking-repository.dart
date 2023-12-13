@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:individual_project/services/models/booking.dart';
-import 'package:individual_project/services/models/feedback.dart';
+import 'package:individual_project/models/booking.dart';
+import 'package:individual_project/models/feedback.dart';
 
 class BookingRepository extends ChangeNotifier {
   List<Booking> bookings = [

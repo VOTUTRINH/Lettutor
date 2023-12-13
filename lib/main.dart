@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/pages/login/login.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
 import 'package:individual_project/services/respository/account-repository.dart';
 import 'package:individual_project/services/respository/booking-repository.dart';
@@ -22,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   final feedbackRepository = new FeedbackRepository();
   final bookingRepository = new BookingRepository();
   final TutorFilter tutorFilter = new TutorFilter();
+  final AuthProvider authProvider = new AuthProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => tutorFilter),
         ChangeNotifierProvider(create: (context) => feedbackRepository),
         ChangeNotifierProvider(create: (context) => bookingRepository),
+        ChangeNotifierProvider(create: (context) => authProvider),
       ],
       child: MaterialApp(
         title: 'Name',
@@ -39,7 +43,7 @@ class _MyAppState extends State<MyApp> {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        home: ListTutorsPage(),
+        home: LoginPage(),
       ),
     );
   }

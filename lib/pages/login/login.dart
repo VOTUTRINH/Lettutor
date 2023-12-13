@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/user.dart';
 import 'package:individual_project/pages/login/widgets/banner.dart';
 import 'package:individual_project/pages/login/widgets/textField.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
-import 'package:individual_project/services/models/account.dart';
+import 'package:individual_project/models/account.dart';
+import 'package:individual_project/services/auth.service.dart';
 import 'package:individual_project/services/respository/account-repository.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
@@ -34,15 +37,16 @@ class _LoginPage extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  String email = '';
-  String password = '';
+  bool isValidEmail(String email) {
+    return RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email);
+  }
 
   @override
   Widget build(BuildContext context) {
     double vw4 = MediaQuery.of(context).size.width * 0.04;
     double vw6 = MediaQuery.of(context).size.width * 0.06;
     AccountRepository accountRepository = context.watch<AccountRepository>();
-
+    AuthProvider authProvider = context.watch<AuthProvider>();
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         body: SingleChildScrollView(
@@ -61,9 +65,7 @@ class _LoginPage extends State<LoginPage> {
                               title: 'MAIL',
                               placeholder: 'mail@example.com',
                               controller: emailController,
-                              onChanged: (value) {
-                                email = value;
-                              },
+                              onChanged: (value) {},
                             ),
                           ),
                           Container(
@@ -72,9 +74,7 @@ class _LoginPage extends State<LoginPage> {
                                 title: 'PASSWORD',
                                 placeholder: '',
                                 controller: passwordController,
-                                onChanged: (value) {
-                                  password = value;
-                                },
+                                onChanged: (value) {},
                               )),
                           if (widget.isLogin)
                             Container(
@@ -99,27 +99,45 @@ class _LoginPage extends State<LoginPage> {
                               child: Row(children: [
                                 Expanded(
                                     child: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    if (!isValidEmail(emailController.text)) {
+                                      showSnackBar('Invalid email');
+                                      return;
+                                    }
+
+                                    if (passwordController.text.length < 6) {
+                                      showSnackBar(
+                                          'Password must be at least 6 characters');
+                                      return;
+                                    }
+                                    var response = {};
                                     if (widget.isLogin) {
-                                      if (accountRepository.isExistedAccount(
-                                          email, password)) {
-                                        showSnackBar('Login Successful');
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ListTutorsPage(),
-                                          ),
-                                        );
-                                      }
+                                      response = await AuthService.login(
+                                          User(emailController.text,
+                                              passwordController.text),
+                                          authProvider);
                                     } else {
-                                      if (!accountRepository.isExistedAccount(
-                                          email, password)) {
-                                        var account =
-                                            new Account(1, email, password);
-                                        accountRepository.add(account);
-                                        showSnackBar('Sign up Successful');
-                                      }
+                                      response = await AuthService.register(
+                                          User(emailController.text,
+                                              passwordController.text),
+                                          authProvider);
+                                    }
+
+                                    if (response != {} &&
+                                        response['isSuccess'] == true) {
+                                      showSnackBar(
+                                          response['message'].toString());
+                                      // ignore: use_build_context_synchronously
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ListTutorsPage(),
+                                        ),
+                                      );
+                                    } else {
+                                      showSnackBar(
+                                          response['message'].toString());
                                     }
                                   },
                                   style: ButtonStyle(

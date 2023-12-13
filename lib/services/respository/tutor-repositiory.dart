@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:individual_project/services/models/account.dart';
-import 'package:individual_project/services/models/booking.dart';
-import 'package:individual_project/services/models/tutor.dart';
+import 'package:individual_project/models/account.dart';
+import 'package:individual_project/models/booking.dart';
+import 'package:individual_project/models/tutor.dart';
 
 class TutorRepository extends ChangeNotifier {
   List<Tutor> tutorList = [

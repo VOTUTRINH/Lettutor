@@ -6,8 +6,8 @@ import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
-import 'package:individual_project/services/models/tutor.dart';
-import 'package:individual_project/services/models/feedback.dart';
+import 'package:individual_project/models/tutor.dart';
+import 'package:individual_project/models/feedback.dart';
 import 'package:individual_project/services/respository/feedback-repository.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:individual_project/widgets/appBar.dart';
@@ -24,13 +24,6 @@ class TutorDetailPage extends StatefulWidget {
 }
 
 class _TutorDetailPage extends State<TutorDetailPage> {
-  final FeedBack feedBack = FeedBack(
-      id: "1",
-      userId: "Vo Tu Trinh",
-      tutorId: "",
-      rating: 4,
-      content: "Adadaa",
-      createdAt: "2 hours ago");
   rederListTag(String tags) {
     if (tags != null) {
       List<String> listTag = tags.split(",");

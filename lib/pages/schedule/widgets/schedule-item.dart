@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/pages/schedule/widgets/Info.dart';
 import 'package:individual_project/pages/schedule/widgets/text-field-dialog.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
-import 'package:individual_project/services/models/booking.dart';
+import 'package:individual_project/models/booking.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 

@@ -21,6 +21,7 @@ dependencies:
   path_provider: any
   syncfusion_flutter_calendar: ^23.2.4
   intl: 0.18.1
+  flutter_secure_storage: ^7.0.1
 
 dev_dependencies:
   flutter_test:

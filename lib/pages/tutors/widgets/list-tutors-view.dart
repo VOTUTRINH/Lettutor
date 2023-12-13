@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/filter.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
-import 'package:individual_project/services/models/tutor.dart';
+import 'package:individual_project/models/tutor.dart';
 import 'package:individual_project/services/respository/tutor-filter.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:provider/provider.dart';

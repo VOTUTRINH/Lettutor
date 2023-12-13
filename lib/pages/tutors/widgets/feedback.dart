@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
-import 'package:individual_project/services/models/feedback.dart';
+import 'package:individual_project/models/feedback.dart';
 import 'package:provider/provider.dart';
 
 class FeedBackUI extends StatelessWidget {
@@ -24,12 +24,12 @@ class FeedBackUI extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Wrap(children: [
-                  Text(feedback!.userId!, style: TextStyle(fontSize: 12)),
+                  Text(feedback!.id!, style: TextStyle(fontSize: 12)),
                   SizedBox(width: 8),
                   Text(feedback!.createdAt!, style: TextStyle(fontSize: 12))
                 ]),
                 SizedBox(height: 5),
-                StarRating(rating: feedback!.rating),
+                StarRating(rating: feedback!.rating.ceil()),
                 SizedBox(height: 5),
                 Text(feedback!.content!,
                     style: TextStyle(

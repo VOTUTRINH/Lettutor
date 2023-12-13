@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/courses/widgets/course-card.dart';
-import 'package:individual_project/services/models/course.dart';
+import 'package:individual_project/models/course.dart';
 
 class ListCourse extends StatefulWidget {
   const ListCourse({Key? key, this.title, required this.listCourses})

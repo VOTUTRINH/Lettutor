@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:individual_project/services/models/tutor.dart';
+import 'package:individual_project/models/tutor.dart';
 
 class TutorFilter extends ChangeNotifier {
   late String specialties = "ALL";

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:individual_project/services/models/booking.dart';
-import 'package:individual_project/services/models/tutor.dart';
+import 'package:individual_project/models/booking.dart';
+import 'package:individual_project/models/tutor.dart';
 import 'package:individual_project/services/respository/booking-repository.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:individual_project/widgets/appBar.dart';

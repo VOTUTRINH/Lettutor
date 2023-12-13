@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:individual_project/services/models/account.dart';
+import 'package:individual_project/models/account.dart';
 
 class AccountRepository extends ChangeNotifier {
   final List<Account> accounts = [];
