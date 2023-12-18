@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
-import 'package:individual_project/models/user.dart';
+import 'package:individual_project/models/user/user.dart';
 import 'package:individual_project/pages/login/widgets/banner.dart';
 import 'package:individual_project/pages/login/widgets/textField.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';

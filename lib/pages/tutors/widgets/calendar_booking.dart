@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/models/booking.dart';
-import 'package:individual_project/models/tutor.dart';
+import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/services/respository/booking-repository.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:individual_project/widgets/appBar.dart';
@@ -25,11 +25,10 @@ class _CalendarBookingState extends State<CalendarBooking> {
       body: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Container(
-          width: 600,
           child: SfCalendar(
             view: CalendarView.week,
             dataSource: BookingDataSource(
-                bookingRepository.getBookingByTutorId(widget.tutor.userId!) ??
+                bookingRepository.getBookingByTutorId(widget.tutor.user!.id!) ??
                     []),
             monthViewSettings: const MonthViewSettings(
               appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,

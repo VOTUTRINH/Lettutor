@@ -1,23 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/learn-topic.dart';
+import 'package:individual_project/models/tutor/tutor-info.dart';
+import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/pages/tutors/widgets/filter.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
-import 'package:individual_project/models/tutor.dart';
-import 'package:individual_project/services/respository/tutor-filter.dart';
+import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
+import 'package:individual_project/services/tutor.service.dart';
 import 'package:provider/provider.dart';
 
-class ListTutorsView extends StatelessWidget {
+class ListTutorsView extends StatefulWidget {
+  const ListTutorsView({Key? key}) : super(key: key);
+  @override
+  _ListTutorsState createState() => _ListTutorsState();
+}
+
+class _ListTutorsState extends State<ListTutorsView> {
+  List<Tutor> _tutors = [];
+  List<TutorInfo> _tutorInfos = [];
+  List<dynamic> _specialties = [];
+
+  void getTutorList(String token, int perPage, int page,
+      AuthProvider authProvider, TutorFilter tutorFilter) async {
+    List<dynamic> specialties = [];
+    specialties.add(LearnTopic(id: 0, key: 'all', name: 'ALL'));
+    specialties.addAll(authProvider.userLoggedIn.learnTopics!);
+    specialties.addAll(authProvider.userLoggedIn.testPreparations!);
+
+    List<TutorInfo> tutorInfos = [];
+
+    // if (tutorFilter.isFilterTutor()) {
+    //   tutorInfos = await TutorService.searchTutor(
+    //     page,
+    //     perPage,
+    //     token,
+    //     search: tutorFilter.getName(),
+    //     specialties: [],
+    //   );
+    // } else {
+    tutorInfos = await TutorService.getTutors(token, perPage, page);
+    // }
+
+    List<Tutor> tutors = [];
+    for (int i = 0; i < tutorInfos.length; i++) {
+      final tutor =
+          await TutorService.getTutorById(token, tutorInfos[i].userId);
+      tutors.add(tutor);
+    }
+
+    if (mounted) {
+      setState(() {
+        _tutors = tutors;
+        _specialties = specialties;
+        _tutorInfos = tutorInfos;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final tutorRepository = Provider.of<TutorRepository>(context);
     final tutorFilter = Provider.of<TutorFilter>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
+    this.getTutorList(
+        authProvider.getAccessToken(), 9, 1, authProvider, tutorFilter);
 
     return Container(
         padding: EdgeInsets.fromLTRB(30, 33, 30, 49),
         child: Column(
           children: [
-            Filter(),
+            Filter(specialties: _specialties),
             Container(
                 margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
                 alignment: Alignment.topLeft,
@@ -27,37 +81,28 @@ class ListTutorsView extends StatelessWidget {
                 )),
 
             // List of tutors sorted by favorite and rating
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: tutorRepository.getTutorList().length,
-                  itemBuilder: (context, index) {
-                    // Sort the tutorList by favorite and rating
-                    tutorRepository.getTutorList().sort((a, b) {
-                      if (a.isFavorite != b.isFavorite) {
-                        return a.isFavorite! ? -1 : 1;
-                      } else {
-                        return b.rating!.compareTo(a.rating ?? 0);
-                      }
-                    });
-
-                    // Filter the tutorList by specialties
-                    if (tutorFilter.getspecialties() != '') {
-                      if (tutorFilter.isValidTutor(
-                          tutorRepository.getTutorList()[index])) {
-                        return TutorItem(
-                            tutor: tutorRepository.getTutorList()[index]);
-                      } else {
-                        return Container();
-                      }
-                    }
-
-                    return TutorItem(
-                        tutor: tutorRepository.getTutorList()[index]);
-                  }),
-            ),
+            (_tutors.length > 0 && _tutorInfos.length > 0)
+                ? Container(
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: this._tutors.length,
+                        itemBuilder: (context, index) {
+                          // Sort the tutorList by favorite and rating
+                          _tutors.sort((a, b) {
+                            if (a.isFavorite != b.isFavorite) {
+                              return a.isFavorite! ? -1 : 1;
+                            } else {
+                              return b.avgRating!.compareTo(a.avgRating ?? 0);
+                            }
+                          });
+                          return TutorItem(
+                              tutor: _tutors[index],
+                              feedbacks: _tutorInfos[index].feedbacks);
+                        }),
+                  )
+                : Container(),
           ],
         ));
   }

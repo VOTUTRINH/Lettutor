@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:individual_project/models/tutor.dart';
 import 'package:video_player/video_player.dart';
 
 // ignore: must_be_immutable

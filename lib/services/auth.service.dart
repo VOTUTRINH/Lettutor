@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/tokens.dart';
-import 'package:individual_project/models/user-info.dart';
-import 'package:individual_project/models/user.dart';
+
+import 'package:individual_project/models/user/user-info.dart';
+import 'package:individual_project/models/user/user.dart';
 import 'package:individual_project/services/base_url.dart';
 import 'package:http/http.dart' as http;
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:individual_project/models/tutor.dart';
+import 'package:individual_project/models/tutor/tutor.dart';
 
 class TutorFilter extends ChangeNotifier {
-  late String specialties = "ALL";
+  late String specialties = "all";
   late String name = "";
   late String country = "";
 
@@ -33,12 +33,7 @@ class TutorFilter extends ChangeNotifier {
     return this.country;
   }
 
-  isValidTutor(Tutor tutor) {
-    return (specialties == "ALL" ||
-            tutor.specialties!.contains(this.specialties)) &&
-        (name == "" ||
-            tutor.name!.toLowerCase().contains(this.name.toLowerCase())) &&
-        (country == "" ||
-            tutor.country!.toLowerCase().contains(this.country.toLowerCase()));
+  isFilterTutor() {
+    return specialties != "all" || name.trim() != "" || country.trim() != "";
   }
 }

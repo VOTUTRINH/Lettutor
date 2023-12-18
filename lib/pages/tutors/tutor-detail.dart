@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/pages/tutors/widgets/calendar_booking.dart';
+import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/video.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
-import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
-import 'package:individual_project/pages/tutors/widgets/tag.dart';
-import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
-import 'package:individual_project/models/tutor.dart';
 import 'package:individual_project/models/feedback.dart';
-import 'package:individual_project/services/respository/feedback-repository.dart';
-import 'package:individual_project/services/respository/tutor-repositiory.dart';
+import 'package:individual_project/services/tutor.service.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 /// Stateful widget to fetch and then display video content
 class TutorDetailPage extends StatefulWidget {
-  const TutorDetailPage({super.key, required this.tutor});
-  final Tutor tutor;
+  const TutorDetailPage({super.key, required this.tutorId, this.feedbacks});
+  final String tutorId;
+  final List<FeedBack>? feedbacks;
   @override
   _TutorDetailPage createState() => _TutorDetailPage();
 }
@@ -32,9 +30,17 @@ class _TutorDetailPage extends State<TutorDetailPage> {
         alignment: Alignment.topLeft,
         child: Wrap(
           children: listTag
-              .map((tag) => Tag(
-                    text: tag,
-                    isSelected: true,
+              .map((tag) => Container(
+                    margin: EdgeInsets.all(4),
+                    padding:
+                        EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 4),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Color.fromARGB(255, 169, 201, 232)),
+                    child: Text(
+                      tag,
+                      style: TextStyle(color: Colors.blue, fontSize: 12),
+                    ),
                   ))
               .toList(), // Create a Tag widget for each tag
         ),
@@ -54,154 +60,168 @@ class _TutorDetailPage extends State<TutorDetailPage> {
     }
   }
 
-  //TODO
-  renderListFeedback() {}
+  Tutor _tutor = Tutor();
+
+  findTutorById(String token, String id) async {
+    Tutor tutor = await TutorService.getTutorById(token, id);
+    if (mounted) {
+      setState(() {
+        _tutor = tutor;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final imageCountry =
-        'icons/flags/png/${widget.tutor.country!.toLowerCase()}.png';
-    final tutorRepository = Provider.of<TutorRepository>(context);
-    final feedbackRepository = Provider.of<FeedbackRepository>(context);
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    findTutorById(authProvider.getAccessToken(), widget.tutorId);
+
+    // final imageCountry =
+    //     'icons/flags/png/${_tutor.user!.country!.toLowerCase()}.png';
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
-            child: Container(
-                padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+            child: (_tutor.user != null)
+                ? Container(
+                    padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircularImage(
-                          imageUrl: widget.tutor.avatar!,
-                          size: 110,
-                        ),
-                        Container(
-                            margin: EdgeInsets.only(left: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                    child: Text(
-                                  widget.tutor.name!,
-                                  style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w600),
-                                )),
-                                StarRating(rating: widget.tutor.rating!),
-                                Row(
-                                  children: [
-                                    Image.asset(
-                                      imageCountry,
-                                      package: 'country_icons',
-                                      width: 22,
-                                      height: 22,
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(widget.tutor.country!)
-                                  ],
-                                )
-                              ],
-                            )),
-                      ],
-                    ),
-                    //TODO: favorite + reporting
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            widget.tutor.isFavorite = !widget.tutor.isFavorite!;
-                            tutorRepository.update(widget.tutor);
-                          });
-                        },
-                        child: Icon(
-                          widget.tutor.isFavorite!
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                          color: widget.tutor.isFavorite!
-                              ? Colors.red
-                              : Colors.blue,
-                          size: 36.0,
-                        ),
-                      )
-                    ]),
-                    Container(
-                        padding: EdgeInsets.fromLTRB(0, 15, 50, 0),
-                        margin: EdgeInsets.only(bottom: 15),
-                        child: Text(widget.tutor.description ?? "")),
-
-                    VideoPlayerScreen(link: widget.tutor.video),
-                    Container(
-                        margin: EdgeInsets.only(bottom: 20, top: 35),
-                        child: Column(
+                        Row(
                           children: [
-                            title("Education"),
+                            CircularImage(
+                              imageUrl: _tutor.user!.avatar!,
+                              size: 110,
+                            ),
                             Container(
-                                alignment: Alignment.topLeft,
-                                margin: EdgeInsets.only(bottom: 7, left: 15),
-                                child: Text(widget.tutor.education!,
-                                    style: TextStyle(fontSize: 15)))
+                                margin: EdgeInsets.only(left: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        child: Text(
+                                      _tutor.user!.name,
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w600),
+                                    )),
+                                    StarRating(rating: _tutor.avgRating!),
+                                    Row(
+                                      children: [
+                                        // Image.asset(
+                                        //   imageCountry,
+                                        //   package: 'country_icons',
+                                        //   width: 22,
+                                        //   height: 22,
+                                        // ),
+                                        SizedBox(width: 5),
+                                        Text(_tutor.user!.country!)
+                                      ],
+                                    )
+                                  ],
+                                )),
                           ],
-                        )),
-                    title("Languages"),
-                    rederListTag(widget.tutor.languages!),
-                    title("Specialties"),
-                    rederListTag(widget.tutor.specialties!),
+                        ),
+                        //TODO: favorite + reporting
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  setState(() async {
+                                    final isFavorite = await TutorService
+                                        .addAndRemoveTutorFavorite(
+                                            _tutor.user!.id,
+                                            authProvider.getAccessToken());
+                                    _tutor.isFavorite = isFavorite;
+                                  });
+                                },
+                                child: Icon(
+                                  _tutor.isFavorite!
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: _tutor.isFavorite!
+                                      ? Colors.red
+                                      : Colors.blue,
+                                  size: 36.0,
+                                ),
+                              )
+                            ]),
+                        Container(
+                            padding: EdgeInsets.fromLTRB(0, 15, 50, 0),
+                            margin: EdgeInsets.only(bottom: 15),
+                            child: Text(_tutor.bio ?? "")),
 
-                    ...[
-                      {
-                        "title": "Interests",
-                        "content": widget.tutor.interests!
-                      },
-                      {
-                        "title": "Teaching experience",
-                        "content": widget.tutor.experience
-                      }
-                    ]
-                        .map((e) => Container(
-                            margin: EdgeInsets.only(bottom: 20),
+                        VideoPlayerScreen(link: _tutor.video),
+                        Container(
+                            margin: EdgeInsets.only(bottom: 20, top: 35),
                             child: Column(
                               children: [
-                                title(e['title'] as String),
+                                title("Education"),
                                 Container(
                                     alignment: Alignment.topLeft,
                                     margin:
                                         EdgeInsets.only(bottom: 7, left: 15),
-                                    child: Text(e['content'] as String,
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400)))
+                                    child: Text(_tutor.education!,
+                                        style: TextStyle(fontSize: 15)))
                               ],
-                            )))
-                        .toList(),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: title("Other review"),
-                    ),
-                    ...feedbackRepository
-                        .getFeedbacksByTutorId(widget.tutor.userId)
-                        .map((e) => FeedBackUI(feedback: e))
-                        .toList(),
-                    Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.only(top: 20, bottom: 20),
-                        child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      CalendarBooking(tutor: widget.tutor),
-                                ),
-                              );
-                            },
-                            child: Text("List booking",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400)))) // List
-                  ],
-                ))));
+                            )),
+                        title("Languages"),
+                        rederListTag(_tutor.languages!),
+                        title("Specialties"),
+                        rederListTag(_tutor.specialties!),
+
+                        ...[
+                          {"title": "Interests", "content": _tutor.interests!},
+                          {
+                            "title": "Teaching experience",
+                            "content": _tutor.experience
+                          }
+                        ]
+                            .map((e) => Container(
+                                margin: EdgeInsets.only(bottom: 20),
+                                child: Column(
+                                  children: [
+                                    title(e['title'] as String),
+                                    Container(
+                                        alignment: Alignment.topLeft,
+                                        margin: EdgeInsets.only(
+                                            bottom: 7, left: 15),
+                                        child: Text(e['content'] as String,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400)))
+                                  ],
+                                )))
+                            .toList(),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: title("Other review"),
+                        ),
+                        ...widget.feedbacks!
+                            .getRange(0, 10)
+                            .map((e) => FeedBackUI(feedback: e))
+                            .toList(),
+                        Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(top: 20, bottom: 20),
+                            child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          CalendarBooking(tutor: _tutor),
+                                    ),
+                                  );
+                                },
+                                child: Text("List booking",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)))) // List
+                      ],
+                    ))
+                : Container(child: Text("Loading..."))));
   }
 }

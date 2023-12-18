@@ -5,7 +5,7 @@ import 'package:individual_project/pages/tutors/list-tutors.dart';
 import 'package:individual_project/services/respository/account-repository.dart';
 import 'package:individual_project/services/respository/booking-repository.dart';
 import 'package:individual_project/services/respository/feedback-repository.dart';
-import 'package:individual_project/services/respository/tutor-filter.dart';
+import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:provider/provider.dart';
 

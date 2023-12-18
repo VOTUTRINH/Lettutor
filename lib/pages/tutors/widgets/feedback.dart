@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/models/user/user-info.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/models/feedback.dart';
@@ -15,25 +16,21 @@ class FeedBackUI extends StatelessWidget {
         padding: EdgeInsets.only(top: 16, left: 16),
         child: Row(
           children: [
-            CircularImage(
-                imageUrl:
-                    "https://sandbox.api.lettutor.com/avatar/cb9e7deb-3382-48db-b07c-90acf52f541cavatar1686550060378.jpg",
-                size: 32),
+            CircularImage(imageUrl: feedback!.firstInfo.avatar, size: 32),
             SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Wrap(children: [
-                  Text(feedback!.id!, style: TextStyle(fontSize: 12)),
+                  Text(feedback!.firstInfo.name ?? '',
+                      style: TextStyle(fontSize: 12)),
                   SizedBox(width: 8),
                   Text(feedback!.createdAt!, style: TextStyle(fontSize: 12))
                 ]),
                 SizedBox(height: 5),
-                StarRating(rating: feedback!.rating.ceil()),
+                StarRating(rating: feedback!.rating.ceil() as double),
                 SizedBox(height: 5),
-                Text(feedback!.content!,
-                    style: TextStyle(
-                        fontSize: 14)) // TODO: get user name from user id
+                Text(feedback!.content!, style: TextStyle(fontSize: 14))
               ],
             ),
           ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
-import 'package:individual_project/services/respository/tutor-filter.dart';
+import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:provider/provider.dart';
 
 class Input extends StatelessWidget {
@@ -41,6 +41,9 @@ class Input extends StatelessWidget {
 }
 
 class Filter extends StatefulWidget {
+  Filter({Key? key, this.specialties}) : super(key: key);
+
+  List<dynamic>? specialties;
   @override
   _FilterState createState() => _FilterState();
 }
@@ -121,7 +124,8 @@ class _FilterState extends State<Filter> {
         Container(
           alignment: Alignment.topLeft,
           child: Wrap(
-            children: tags.map((tag) => Tag(text: tag)).toList(),
+            children:
+                widget.specialties!.map((tag) => Tag(value: tag)).toList(),
           ),
         ),
       ]),

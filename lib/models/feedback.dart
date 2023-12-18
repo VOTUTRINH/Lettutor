@@ -3,7 +3,7 @@ class FeedBack {
   String? bookingId;
   late String firstId;
   late String secondId;
-  late double rating;
+  late int rating;
   late String content;
   late String createdAt;
   late String updatedAt;
@@ -20,20 +20,34 @@ class FeedBack {
       required this.updatedAt,
       required this.firstInfo});
 
-  factory FeedBack.fromJson(Map<String, dynamic> json) {
-    return FeedBack(
-      id: json['id'],
-      bookingId: json['bookingId'],
-      firstId: json['firstId'],
-      secondId: json['secondId'],
-      rating: json['rating'].runtimeType == double
-          ? json['rating']
-          : double.parse(json['rating'].toString()),
-      content: json['content'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      firstInfo: FirstInfo.fromJson(json['firstInfo']),
-    );
+  FeedBack.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    bookingId = json['bookingId'];
+    firstId = json['firstId'];
+    secondId = json['secondId'];
+    if (json["rating"].runtimeType == int) {
+      rating = json['rating'];
+    } else {
+      rating = json['rating'].toInt() ?? 5;
+    }
+    content = json['content'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    firstInfo = FirstInfo.fromJson(json['firstInfo']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['bookingId'] = bookingId;
+    data['firstId'] = firstId;
+    data['secondId'] = secondId;
+    data['rating'] = rating;
+    data['content'] = content;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['firstInfo'] = firstInfo.toJson();
+    return data;
   }
 }
 
@@ -53,7 +67,7 @@ class FirstInfo {
   String? level;
   bool? requestPassword;
   bool? isPhoneActivated;
-  String? studySchedule;
+  String? requireNote;
   int? timezone;
   String? phoneAuth;
   bool? isPhoneAuthActivated;
@@ -77,7 +91,7 @@ class FirstInfo {
     this.level,
     this.requestPassword,
     this.isPhoneActivated,
-    this.studySchedule,
+    this.requireNote,
     this.timezone,
     this.phoneAuth,
     this.isPhoneAuthActivated,
@@ -86,30 +100,55 @@ class FirstInfo {
     this.deletedAt,
   });
 
-  factory FirstInfo.fromJson(Map<String, dynamic> json) {
-    return FirstInfo(
-      id: json['id'],
-      email: json['email'],
-      google: json['google'],
-      facebook: json['facebook'],
-      apple: json['apple'],
-      name: json['name'],
-      avatar: json['avatar'],
-      country: json['country'],
-      phone: json['phone'],
-      language: json['language'],
-      birthday: json['birthday'],
-      isActivated: json['isActivated'],
-      level: json['level'],
-      requestPassword: json['requestPassword'],
-      isPhoneActivated: json['isPhoneActivated'],
-      studySchedule: json['studySchedule'],
-      timezone: json['timezone'],
-      phoneAuth: json['phoneAuth'],
-      isPhoneAuthActivated: json['isPhoneAuthActivated'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      deletedAt: json['deletedAt'],
-    );
+  FirstInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    email = json['email'];
+    google = json['google'];
+    facebook = json['facebook'];
+    apple = json['apple'];
+    name = json['name'];
+    avatar = json['avatar'];
+    country = json['country'];
+    phone = json['phone'];
+    language = json['language'];
+    birthday = json['birthday'];
+    isActivated = json['isActivated'];
+    level = json['level'];
+    requestPassword = json['requestPassword'];
+    isPhoneActivated = json['isPhoneActivated'];
+    requireNote = json['requireNote'];
+    timezone = json['timezone'];
+    phoneAuth = json['phoneAuth'];
+    isPhoneAuthActivated = json['isPhoneAuthActivated'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    deletedAt = json['deletedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['email'] = email;
+    data['google'] = google;
+    data['facebook'] = facebook;
+    data['apple'] = apple;
+    data['name'] = name;
+    data['avatar'] = avatar;
+    data['country'] = country;
+    data['phone'] = phone;
+    data['language'] = language;
+    data['birthday'] = birthday;
+    data['isActivated'] = isActivated;
+    data['level'] = level;
+    data['requestPassword'] = requestPassword;
+    data['isPhoneActivated'] = isPhoneActivated;
+    data['requireNote'] = requireNote;
+    data['timezone'] = timezone;
+    data['phoneAuth'] = phoneAuth;
+    data['isPhoneAuthActivated'] = isPhoneAuthActivated;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['deletedAt'] = deletedAt;
+    return data;
   }
 }

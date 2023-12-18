@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CircularImage extends StatelessWidget {
   final String imageUrl;
@@ -9,11 +10,14 @@ class CircularImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      child: Image.network(
-        imageUrl,
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        fit: BoxFit.cover,
         width: size,
         height: size,
-        fit: BoxFit.cover, // You can choose how to fit the image
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
     );
   }

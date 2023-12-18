@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/pages/tutors/tutor-detail.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
-import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
-import 'package:individual_project/pages/tutors/widgets/tag.dart';
-import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
-import 'package:individual_project/models/tutor.dart';
-import 'package:individual_project/services/respository/tutor-repositiory.dart';
+import 'package:individual_project/services/tutor.service.dart';
 import 'package:provider/provider.dart';
-import 'package:country_icons/country_icons.dart';
+import 'package:individual_project/models/feedback.dart';
 
 class TutorItem extends StatefulWidget {
-  const TutorItem({
-    super.key,
-    required this.tutor,
-  });
+  const TutorItem({super.key, required this.tutor, this.feedbacks});
 
   final Tutor tutor;
+  final List<FeedBack>? feedbacks;
 
   @override
   _TutorItemState createState() => _TutorItemState();
@@ -25,8 +21,7 @@ class TutorItem extends StatefulWidget {
 class _TutorItemState extends State<TutorItem> {
   @override
   Widget build(BuildContext context) {
-    final TutorRepository tutorRepository =
-        Provider.of<TutorRepository>(context);
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
     return Container(
       margin: EdgeInsets.only(bottom: 20),
@@ -39,7 +34,8 @@ class _TutorItemState extends State<TutorItem> {
               context,
               MaterialPageRoute(
                 builder: (context) => TutorDetailPage(
-                  tutor: widget.tutor,
+                  tutorId: widget.tutor.user!.id,
+                  feedbacks: widget.feedbacks,
                 ),
               ),
             );
@@ -52,8 +48,7 @@ class _TutorItemState extends State<TutorItem> {
                   children: [
                     Center(
                       child: CircularImage(
-                        imageUrl:
-                            "https://cdn.tuoitre.vn/thumb_w/730/2019/5/8/avatar-publicitystill-h2019-1557284559744252594756.jpg",
+                        imageUrl: widget.tutor.user!.avatar,
                       ),
                     ),
                     Positioned(
@@ -62,8 +57,13 @@ class _TutorItemState extends State<TutorItem> {
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                            widget.tutor.isFavorite = !widget.tutor.isFavorite!;
-                            tutorRepository.update(widget.tutor);
+                            setState(() async {
+                              final isFavorite =
+                                  await TutorService.addAndRemoveTutorFavorite(
+                                      widget.tutor.user!.id,
+                                      authProvider.getAccessToken());
+                              widget.tutor.isFavorite = isFavorite;
+                            });
                           });
                         },
                         child: Icon(
@@ -85,21 +85,22 @@ class _TutorItemState extends State<TutorItem> {
                       children: [
                         Container(
                             alignment: Alignment.topLeft,
-                            child: Text(widget.tutor.name ?? '',
+                            child: Text(widget.tutor.user!.name ?? '',
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w600))),
                         Container(
                             child: Row(
                           children: [
-                            Image.asset(
-                              'icons/flags/png/${widget.tutor.country!.toLowerCase()}.png',
-                              package: 'country_icons',
-                              width: 22,
-                              height: 22,
-                            ),
+                            //  Image.asset(
+                            //     'icons/flags/png/${widget.tutor.user!.country!.toLowerCase()}.png',
+                            //     package: 'country_icons',
+                            //     width: 22,
+                            //     height: 22,
+                            //   )
+
                             SizedBox(width: 5),
-                            Text(widget.tutor.country!)
+                            Text(widget.tutor.user!.country!)
                           ],
                         ))
                       ],
@@ -110,14 +111,26 @@ class _TutorItemState extends State<TutorItem> {
                   child: Wrap(
                     children: widget.tutor.specialties!
                         .split(',')
-                        .map((tag) => Tag(text: tag, isSelected: true))
+                        .map((tag) => Container(
+                              margin: EdgeInsets.all(4),
+                              padding: EdgeInsets.only(
+                                  left: 12, right: 12, top: 4, bottom: 4),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Color.fromARGB(255, 169, 201, 232)),
+                              child: Text(
+                                tag,
+                                style:
+                                    TextStyle(color: Colors.blue, fontSize: 12),
+                              ),
+                            ))
                         .toList(), // Create a Tag widget for each tag
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 14, bottom: 14),
                   child: Wrap(
-                    children: [Text(widget.tutor.description ?? '')],
+                    children: [Text(widget.tutor.bio ?? '')],
                   ),
                 ),
                 Container(
@@ -128,7 +141,8 @@ class _TutorItemState extends State<TutorItem> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => TutorDetailPage(
-                            tutor: widget.tutor,
+                            tutorId: widget.tutor.user!.id,
+                            feedbacks: widget.feedbacks,
                           ),
                         ),
                       );

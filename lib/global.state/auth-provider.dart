@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:individual_project/models/tokens.dart';
-import 'package:individual_project/models/user-info.dart';
+import 'package:individual_project/models/user/user-info.dart';
 
 class AuthProvider extends ChangeNotifier {
   late UserInfo userLoggedIn;
@@ -22,13 +22,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTokens(Tokens _tokens) {
-    tokens = _tokens;
-    notifyListeners();
-  }
-
-  set setUserInfo(UserInfo user) {
-    userLoggedIn = user;
-    notifyListeners();
+  String getAccessToken() {
+    return tokens!.access.token;
   }
 }
