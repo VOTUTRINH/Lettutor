@@ -21,6 +21,7 @@ class _ListTutorsState extends State<ListTutorsView> {
   List<Tutor> _tutors = [];
   List<TutorInfo> _tutorInfos = [];
   List<dynamic> _specialties = [];
+  bool isLoading = true;
 
   void getTutorList(String token, int perPage, int page,
       AuthProvider authProvider, TutorFilter tutorFilter) async {
@@ -55,6 +56,7 @@ class _ListTutorsState extends State<ListTutorsView> {
         _tutors = tutors;
         _specialties = specialties;
         _tutorInfos = tutorInfos;
+        isLoading = false;
       });
     }
   }
@@ -64,8 +66,11 @@ class _ListTutorsState extends State<ListTutorsView> {
     final tutorRepository = Provider.of<TutorRepository>(context);
     final tutorFilter = Provider.of<TutorFilter>(context);
     final authProvider = Provider.of<AuthProvider>(context);
-    this.getTutorList(
-        authProvider.getAccessToken(), 9, 1, authProvider, tutorFilter);
+
+    if (isLoading) {
+      getTutorList(
+          authProvider.getAccessToken(), 9, 1, authProvider, tutorFilter);
+    }
 
     return Container(
         padding: EdgeInsets.fromLTRB(30, 33, 30, 49),
@@ -81,7 +86,7 @@ class _ListTutorsState extends State<ListTutorsView> {
                 )),
 
             // List of tutors sorted by favorite and rating
-            (_tutors.length > 0 && _tutorInfos.length > 0)
+            (!isLoading)
                 ? Container(
                     margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
                     child: ListView.builder(

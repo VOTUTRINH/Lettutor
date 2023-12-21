@@ -1,12 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/schedule/booking-info.dart';
+import 'package:individual_project/services/user.service.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class UpcomingLesson extends StatelessWidget {
-  // TODO: Set it is input
-  final timeNextLesson = "Thu, 26 Oct 23 03:30 - 03:55 ";
-  final timeStartIn = "(starts in 81:42:07)";
+class UpcomingLesson extends StatefulWidget {
+  const UpcomingLesson({Key? key}) : super(key: key);
+
+  @override
+  _UpcomingLessonState createState() => _UpcomingLessonState();
+}
+
+class _UpcomingLessonState extends State<UpcomingLesson> {
+  Duration? totalLessonTime;
+  BookingInfo? nextLesson;
+  bool isLoading = true;
+
+  void getUpcomingLesson(String token) async {
+    final total = await UserService.getTotalHourLesson(token);
+    final nextLes = await UserService.getNextLesson(token);
+
+    if (mounted) {
+      setState(() {
+        totalLessonTime = Duration(hours: total);
+        nextLesson = nextLes;
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    if (isLoading) {
+      getUpcomingLesson(authProvider.getAccessToken());
+    }
     return Row(children: [
       Expanded(
           child: Container(
@@ -40,11 +69,16 @@ class UpcomingLesson extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Flexible(
-                                      child: Text(
-                                        this.timeNextLesson,
-                                        style: TextStyle(
-                                            fontSize: 20, color: Colors.white),
-                                      ),
+                                      child: isLoading
+                                          ? Text("...")
+                                          : Text(
+                                              nextLesson != null
+                                                  ? "${DateFormat.yMEd().format(DateTime.fromMillisecondsSinceEpoch(nextLesson!.scheduleDetailInfo!.startPeriodTimestamp))} ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(nextLesson!.scheduleDetailInfo!.startPeriodTimestamp))} - ${DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(nextLesson!.scheduleDetailInfo!.endPeriodTimestamp))}"
+                                                  : "",
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.white),
+                                            ),
                                     ),
                                     // Expanded(
                                     //     child: Text(
@@ -82,7 +116,10 @@ class UpcomingLesson extends StatelessWidget {
                       ],
                     ),
                     Container(
-                        child: Text("Total lesson time is 507 hours 55 minutes",
+                        child: Text(
+                            isLoading
+                                ? ''
+                                : 'Total lession time is ${totalLessonTime?.inHours} hours ${(totalLessonTime! - Duration(hours: (totalLessonTime!.inHours > 0 ? totalLessonTime!.inHours : 0)))?.inMinutes} minutes',
                             style:
                                 TextStyle(fontSize: 16, color: Colors.white)))
                   ],

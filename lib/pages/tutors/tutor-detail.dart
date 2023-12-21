@@ -12,7 +12,6 @@ import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
-/// Stateful widget to fetch and then display video content
 class TutorDetailPage extends StatefulWidget {
   const TutorDetailPage({super.key, required this.tutorId, this.feedbacks});
   final String tutorId;
@@ -61,12 +60,14 @@ class _TutorDetailPage extends State<TutorDetailPage> {
   }
 
   Tutor _tutor = Tutor();
+  bool isLoading = true;
 
   findTutorById(String token, String id) async {
     Tutor tutor = await TutorService.getTutorById(token, id);
     if (mounted) {
       setState(() {
         _tutor = tutor;
+        isLoading = false;
       });
     }
   }
@@ -74,7 +75,9 @@ class _TutorDetailPage extends State<TutorDetailPage> {
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
-    findTutorById(authProvider.getAccessToken(), widget.tutorId);
+    if (isLoading) {
+      findTutorById(authProvider.getAccessToken(), widget.tutorId);
+    }
 
     // final imageCountry =
     //     'icons/flags/png/${_tutor.user!.country!.toLowerCase()}.png';
@@ -82,7 +85,7 @@ class _TutorDetailPage extends State<TutorDetailPage> {
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
-            child: (_tutor.user != null)
+            child: (!isLoading)
                 ? Container(
                     padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
                     child: Column(
@@ -199,8 +202,10 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                           alignment: Alignment.topLeft,
                           child: title("Other review"),
                         ),
-                        ...widget.feedbacks!
-                            .getRange(0, 10)
+
+                        ...(widget.feedbacks!.length > 10
+                                ? widget.feedbacks!.getRange(0, 10).toList()
+                                : widget.feedbacks!)
                             .map((e) => FeedBackUI(feedback: e))
                             .toList(),
                         Container(
@@ -211,8 +216,8 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          CalendarBooking(tutor: _tutor),
+                                      builder: (context) => CalendarBooking(
+                                          tutorId: _tutor.user!.id),
                                     ),
                                   );
                                 },

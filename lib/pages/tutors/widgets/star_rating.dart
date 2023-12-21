@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 class StarRating extends StatefulWidget {
   StarRating({this.rating = 5.0, this.size = 14.0});
-  double? rating; // Change from int to double
+  double? rating;
   double? size;
   @override
   _StarRatingState createState() => _StarRatingState();

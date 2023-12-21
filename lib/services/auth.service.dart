@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/tokens.dart';
 

@@ -1,107 +1,127 @@
 import 'package:flutter/material.dart';
-import 'package:individual_project/models/booking.dart';
-import 'package:individual_project/models/tutor/tutor.dart';
-import 'package:individual_project/services/respository/booking-repository.dart';
-import 'package:individual_project/services/respository/tutor-repositiory.dart';
-import 'package:individual_project/widgets/appBar.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/schedule/schedule.dart';
+import 'package:individual_project/models/schedule/schedule_detail.dart';
+import 'package:individual_project/services/schedule.service.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class CalendarBooking extends StatefulWidget {
-  CalendarBooking({Key? key, required this.tutor}) : super(key: key);
-  final Tutor tutor;
+  CalendarBooking({Key? key, required this.tutorId}) : super(key: key);
+  final String tutorId;
 
   @override
   _CalendarBookingState createState() => _CalendarBookingState();
 }
 
 class _CalendarBookingState extends State<CalendarBooking> {
-  @override
-  Widget build(BuildContext context) {
-    final bookingRepository = Provider.of<BookingRepository>(context);
+  List<Schedule> _schedules = [];
+  List<ScheduleDetails> _schedulesDetails = [];
+  bool isLoading = true;
+  getSchedulesByTutorId(String token, String tutorId) async {
+    List<Schedule> res =
+        await ScheduleService.getScheduleByTutorId(token, tutorId);
+    res = res.where((schedule) {
+      final now = DateTime.now();
+      final startTime =
+          DateTime.fromMillisecondsSinceEpoch(schedule.startTimestamp);
 
-    return Scaffold(
-      appBar: AppBar(title: Text("List Booking")),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          child: SfCalendar(
-            view: CalendarView.week,
-            dataSource: BookingDataSource(
-                bookingRepository.getBookingByTutorId(widget.tutor.user!.id!) ??
-                    []),
-            monthViewSettings: const MonthViewSettings(
-              appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
-            ),
-            timeSlotViewSettings: TimeSlotViewSettings(
-              timeInterval: Duration(minutes: 30),
-              timeFormat: 'H:mm',
-            ),
-            onTap: (CalendarTapDetails details) {
-              if (details.targetElement == CalendarElement.appointment) {
-                final Booking booking = details.appointments!.first;
-                if (!booking.isBooked!) {
-                  _showNotePopup(context, booking, bookingRepository);
-                }
-              }
-            },
-            appointmentBuilder:
-                (BuildContext context, CalendarAppointmentDetails details) {
-              final List<Booking> bookings =
-                  details.appointments.cast<Booking>().toList();
+      return startTime.isAfter(now) ||
+          (startTime.day == now.day &&
+              startTime.month == now.month &&
+              startTime.year == now.year);
+    }).toList();
+    List<ScheduleDetails> schedulesDetails = [];
+    res.forEach((schedule) {
+      schedulesDetails.addAll(schedule.scheduleDetails ?? []);
+    });
 
-              return Container(
-                decoration: BoxDecoration(
-                    color: (bookings.any((booking) =>
-                            booking.isBooked! || booking.isBlocked!))
-                        ? Colors.white
-                        : Colors.blue,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: (bookings.isNotEmpty)
-                      ? _buildBookingList(bookings)
-                      : Text("Book", style: TextStyle(color: Colors.white)),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
+    if (mounted) {
+      setState(() {
+        _schedules = res;
+        _schedulesDetails = schedulesDetails;
+        isLoading = false;
+      });
+    }
   }
 
-  Widget _buildBookingList(List<Booking> bookings) {
+  @override
+  Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    if (isLoading) {
+      getSchedulesByTutorId(authProvider.getAccessToken(), widget.tutorId);
+    }
+    return isLoading
+        ? Container(child: Text("Loading...")) //TODO:  custom loading
+        : Scaffold(
+            appBar: AppBar(title: Text("List Booking")),
+            body: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                child: SfCalendar(
+                  view: CalendarView.week,
+                  dataSource: SchduleDataSource(_schedulesDetails ?? []),
+                  monthViewSettings: const MonthViewSettings(
+                    appointmentDisplayMode:
+                        MonthAppointmentDisplayMode.indicator,
+                  ),
+                  timeSlotViewSettings: TimeSlotViewSettings(
+                    timeInterval: Duration(minutes: 30),
+                    timeFormat: 'H:mm',
+                  ),
+                  onTap: (CalendarTapDetails details) {
+                    if (details.targetElement == CalendarElement.appointment) {
+                      final ScheduleDetails schedule =
+                          details.appointments!.first;
+                      if (!schedule.isBooked!) {
+                        _showNotePopup(context, schedule, authProvider);
+                      }
+                    }
+                  },
+                  appointmentBuilder: (BuildContext context,
+                      CalendarAppointmentDetails details) {
+                    final List<ScheduleDetails> schedules =
+                        details.appointments.cast<ScheduleDetails>().toList();
+
+                    return Container(
+                      decoration: BoxDecoration(
+                          color:
+                              (schedules.any((schedule) => schedule.isBooked!))
+                                  ? Colors.white
+                                  : Colors.blue,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: (schedules.isNotEmpty)
+                            ? _buildScheduleList(schedules)
+                            : Text("Book",
+                                style: TextStyle(color: Colors.white)),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+  }
+
+  Widget _buildScheduleList(List<ScheduleDetails> schedules) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: bookings
-          .map((booking) => Text(
-                booking.isBlocked!
-                    ? "Blocked"
-                    : booking.isBooked!
-                        ? "Booked"
-                        : "Book",
+      children: schedules
+          .map((schedule) => Text(
+                schedule.isBooked! ? "Booked" : "Book",
                 style: TextStyle(
-                  color: booking.isBlocked!
-                      ? Colors.grey
-                      : booking.isBooked!
-                          ? Colors.green
-                          : Colors.white,
-                ),
+                    color: schedule.isBooked! ? Colors.green : Colors.white,
+                    fontSize: 10),
               ))
           .toList(),
     );
   }
 
-  void _showNotePopup(
-    BuildContext context,
-    Booking booking,
-    BookingRepository bookingRepository,
-  ) {
-    String note = booking.note ?? '';
-    TextEditingController noteController =
-        TextEditingController(text: booking.note);
-
+  void _showNotePopup(BuildContext context, ScheduleDetails schedule,
+      AuthProvider authProvider) {
+    TextEditingController noteController = TextEditingController(text: '');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -109,22 +129,40 @@ class _CalendarBookingState extends State<CalendarBooking> {
           title: Text('Set Note'),
           content: TextField(
             controller: noteController,
-            onChanged: (value) {
-              note = value;
-            },
             decoration: InputDecoration(
               hintText: 'Enter your note here...',
             ),
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                booking.note = note ?? '';
-                booking.userId = '1';
-                booking.isBooked = true;
-                bookingRepository.update(booking);
+              onPressed: () async {
+                bool res = await ScheduleService.bookAClass(
+                    schedule.id.toString(),
+                    noteController.text,
+                    authProvider.getAccessToken());
 
-                Navigator.of(context).pop();
+                if (res) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Booked successfully'),
+                    ),
+                  );
+
+                  setState(() {
+                    _schedulesDetails.forEach((element) {
+                      if (element.id == schedule.id) {
+                        element.isBooked = true;
+                      }
+                    });
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Booked failed'),
+                    ),
+                  );
+                }
               },
               child: Text('Book'),
             ),
@@ -141,28 +179,30 @@ class _CalendarBookingState extends State<CalendarBooking> {
   }
 }
 
-class BookingDataSource extends CalendarDataSource {
-  BookingDataSource(List<Booking> source) {
+class SchduleDataSource extends CalendarDataSource {
+  SchduleDataSource(List<ScheduleDetails> source) {
     appointments = source;
   }
 
   @override
   DateTime getStartTime(int index) {
-    return _getMeetingData(index).from!;
+    return DateTime.fromMillisecondsSinceEpoch(
+        _getMeetingData(index).startPeriodTimestamp);
   }
 
   @override
   DateTime getEndTime(int index) {
-    return _getMeetingData(index).to!;
+    return DateTime.fromMillisecondsSinceEpoch(
+        _getMeetingData(index).endPeriodTimestamp);
   }
 
-  Booking _getMeetingData(int index) {
-    final dynamic booking = appointments![index];
-    late final Booking bookingData;
-    if (booking is Booking) {
-      bookingData = booking;
+  ScheduleDetails _getMeetingData(int index) {
+    final dynamic schedule = appointments![index];
+    late final ScheduleDetails scheduleData;
+    if (schedule is ScheduleDetails) {
+      scheduleData = schedule;
     }
 
-    return bookingData;
+    return scheduleData;
   }
 }
