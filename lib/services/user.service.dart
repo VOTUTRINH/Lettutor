@@ -46,7 +46,7 @@ class UserService {
 
   static Future<BookingInfo?> getNextLesson(String token) async {
     final now = DateTime.now().millisecondsSinceEpoch;
-    final url = Uri.parse(BaseUrl.baseUrl + 'booking/next?dateTime=$now');
+    final url = Uri.parse(BaseUrl.baseUrl + 'booking/next');
     final res = await http.get(
       url,
       headers: {
@@ -67,7 +67,7 @@ class UserService {
           .where((e) => e.scheduleDetailInfo!.startPeriodTimestamp > now)
           .toList();
 
-      return lessons.isEmpty ? lessons[0] : null;
+      return !lessons.isEmpty ? lessons[0] : null;
     } else {
       throw Exception(json.decode(res.body)["message"]);
     }
