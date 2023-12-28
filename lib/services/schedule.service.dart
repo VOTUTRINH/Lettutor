@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:individual_project/models/booking-info.dart';
 import 'package:individual_project/models/schedule/schedule.dart';
 import 'package:individual_project/services/base_url.dart';
 import 'package:http/http.dart' as http;

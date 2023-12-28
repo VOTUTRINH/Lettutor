@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/models/course/course.dart';
 import 'package:individual_project/pages/courses/course-detail.dart';
-import 'package:individual_project/models/course.dart';
 
 class CourseCard extends StatefulWidget {
   const CourseCard({required this.course, Key? key}) : super(key: key);
@@ -18,7 +18,9 @@ class _CourseCard extends State<CourseCard> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CourseDetailPage(),
+            builder: (context) => CourseDetailPage(
+              courseId: widget.course.id,
+            ),
           ),
         );
       },
@@ -75,11 +77,14 @@ class _CourseCard extends State<CourseCard> {
                   ),
                   Row(
                     children: [
-                      Text(widget.course.level),
+                      Text(widget.course.level), // TODO: handle level
                       SizedBox(
                         width: 5,
                       ),
-                      Text(widget.course.numberLessons.toString()),
+                      Text(widget.course.topics.length.toString()),
+                      SizedBox(
+                        width: 3,
+                      ),
                       Text("Lessons"),
                     ],
                   ),

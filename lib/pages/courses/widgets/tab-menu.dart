@@ -1,23 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:individual_project/pages/courses/widgets/course-card.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/course/course.dart';
 import 'package:individual_project/pages/courses/widgets/list-course.dart';
-import 'package:individual_project/models/course.dart';
+import 'package:individual_project/services/course.service.dart';
+import 'package:provider/provider.dart';
 
-class NestedTabBar extends StatefulWidget {
+class TabMenuCourses extends StatefulWidget {
   final String outerTab;
 
-  NestedTabBar({
+  TabMenuCourses({
     required this.outerTab,
     Key? key,
   }) : super(key: key);
 
   @override
-  _NestedTabBarState createState() => _NestedTabBarState();
+  _TabMenuCoursesState createState() => _TabMenuCoursesState();
 }
 
-class _NestedTabBarState extends State<NestedTabBar>
+class _TabMenuCoursesState extends State<TabMenuCourses>
     with TickerProviderStateMixin {
   late final TabController _tabController;
+
+  List<Course> _courses = [];
+  bool isLoading = true;
+  int page = 1;
+  int size = 10;
+  getCoureList(String token, int page, int size) async {
+    final courses =
+        await CourseService.getListCourseWithPagination(page, size, token);
+    if (mounted) {
+      setState(() {
+        _courses = courses;
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -33,26 +50,10 @@ class _NestedTabBarState extends State<NestedTabBar>
 
   @override
   Widget build(BuildContext context) {
-    List<Course> listCourses = [
-      Course(
-          id: "1",
-          name: "Life in the Internet Age",
-          description:
-              "Let's discuss how technology is changing the way we live",
-          imageUrl:
-              "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e",
-          level: "Intermediate",
-          numberLessons: 9),
-      Course(
-          id: "1",
-          name: "Life in the Internet Age",
-          description:
-              "Let's discuss how technology is changing the way we live",
-          imageUrl:
-              "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e",
-          level: "Intermediate",
-          numberLessons: 9),
-    ];
+    final authProvider = Provider.of<AuthProvider>(context);
+    if (isLoading) {
+      getCoureList(authProvider.getAccessToken(), page, size);
+    }
     return Container(
         child: Column(
       children: [
@@ -68,7 +69,7 @@ class _NestedTabBarState extends State<NestedTabBar>
           indicatorColor: Colors.blue,
         ),
         Container(
-            height: 450 * (listCourses.length * 1.0 ?? 1.0) + 100,
+            height: 450 * (_courses.length * 1.0 ?? 1.0) + 100,
             child: TabBarView(
               controller: _tabController,
               children: <Widget>[
@@ -76,8 +77,8 @@ class _NestedTabBarState extends State<NestedTabBar>
                   margin: EdgeInsets.all(16.0),
                   padding: EdgeInsets.all(8),
                   child: ListCourse(
-                    title: "English For Traveling",
-                    listCourses: listCourses,
+                    title: "",
+                    listCourses: _courses,
                   ),
                 ),
                 Container(

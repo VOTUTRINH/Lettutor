@@ -4,11 +4,9 @@ import 'package:individual_project/models/user/user.dart';
 import 'package:individual_project/pages/login/widgets/banner.dart';
 import 'package:individual_project/pages/login/widgets/textField.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
-import 'package:individual_project/models/account.dart';
 import 'package:individual_project/services/auth.service.dart';
 import 'package:individual_project/services/respository/account-repository.dart';
 import 'package:individual_project/widgets/appBar.dart';
-import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

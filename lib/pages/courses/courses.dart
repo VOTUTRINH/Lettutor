@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/course/course.dart';
 import 'package:individual_project/pages/courses/widgets/dropdown-input.dart';
 import 'package:individual_project/pages/courses/widgets/tab-menu.dart';
+import 'package:individual_project/services/course.service.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
-class CoursesPage extends StatelessWidget {
+class CoursesPage extends StatefulWidget {
+  CoursesPage({Key? key}) : super(key: key);
+
+  @override
+  CoursesPageState createState() => CoursesPageState();
+}
+
+class CoursesPageState extends State<CoursesPage> {
   @override
   Widget build(BuildContext context) {
     List<String> levels = [
@@ -19,6 +29,7 @@ class CoursesPage extends StatelessWidget {
       "Advanced",
       "Intermediate"
     ];
+
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
@@ -87,7 +98,7 @@ class CoursesPage extends StatelessWidget {
                             options: levels, hintText: "Selected Level")
                       ],
                     ),
-                    NestedTabBar(outerTab: "My Outer Tab")
+                    TabMenuCourses(outerTab: "My Outer Tab")
                   ],
                 ))));
   }
