@@ -1,4 +1,6 @@
 import 'package:individual_project/models/schedule/schedule_detail.dart';
+import 'package:individual_project/models/tutor/tutor-info.dart';
+import 'package:individual_project/models/tutor/tutor.dart';
 
 class Schedule {
   late String id;
@@ -10,7 +12,7 @@ class Schedule {
   late String createdAt;
   bool isBooked = false;
   List<ScheduleDetails> scheduleDetails = [];
-  // Tutor? tutorInfo;
+  // TutorInfo? tutorInfo;
 
   Schedule({
     required this.id,
@@ -41,8 +43,9 @@ class Schedule {
       });
     }
 
-    // tutorInfo =
-    //     json['tutorInfo'] != null ? Tutor.fromJson(json['tutorInfo']) : null;
+    // tutorInfo = json['tutorInfo'] != null
+    //     ? TutorInfo.fromJson(json['tutorInfo'])
+    //     : null;
   }
 
   Map<String, dynamic> toJson() {

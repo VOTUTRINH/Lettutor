@@ -1,25 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/schedule/booking-info.dart';
 import 'package:individual_project/pages/schedule/widgets/schedule-item.dart';
-import 'package:individual_project/models/booking-info.dart';
 import 'package:individual_project/services/respository/booking-repository.dart';
+import 'package:individual_project/services/schedule.service.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
-class SchedulePage extends StatelessWidget {
-  Widget cell(value, background) {
-    return Container(
-        decoration: BoxDecoration(
-          color: background, // Set the background color here
-        ),
-        padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
-        child: Text(value));
+class SchedulePage extends StatefulWidget {
+  const SchedulePage({Key? key}) : super(key: key);
+  @override
+  _SchedulePageState createState() => _SchedulePageState();
+}
+
+class _SchedulePageState extends State<SchedulePage> {
+  bool isLoading = true;
+  List<BookingInfo> _bookingInfos = [];
+  int page = 1;
+  int perPage = 10;
+
+  getListSchedule(int page, int perPage, String token) async {
+    final bookingInfos =
+        await ScheduleService.getScheduleOrHistory(page, perPage, 1, token);
+
+    setState(() {
+      _bookingInfos = bookingInfos;
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final bookingRepository = Provider.of<BookingRepository>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
+    if (isLoading) {
+      getListSchedule(page, perPage, authProvider.getAccessToken());
+    }
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
@@ -133,8 +150,7 @@ class SchedulePage extends StatelessWidget {
                       indent: 16,
                       endIndent: 16,
                     ),
-                    ...bookingRepository
-                        .getBookingByUserId('1')
+                    ..._bookingInfos
                         .map((e) => Container(
                             padding: EdgeInsets.only(left: 30, right: 30),
                             child: ScheduleItem(
@@ -143,5 +159,14 @@ class SchedulePage extends StatelessWidget {
                         .toList()
                   ],
                 ))));
+  }
+
+  Widget cell(value, background) {
+    return Container(
+        decoration: BoxDecoration(
+          color: background,
+        ),
+        padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
+        child: Text(value));
   }
 }

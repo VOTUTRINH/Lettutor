@@ -1,67 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/schedule/booking-info.dart';
 import 'package:individual_project/pages/schedule/widgets/Info.dart';
 import 'package:individual_project/pages/schedule/widgets/text-field-dialog.dart';
-import 'package:individual_project/pages/tutors/widgets/avatar.dart';
-import 'package:individual_project/models/booking.dart';
+import 'package:individual_project/services/schedule.service.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleItem extends StatelessWidget {
   ScheduleItem({Key? key, required this.booking}) : super(key: key);
-  final Booking booking;
+  final BookingInfo booking;
 
   formatdate(date) {
-    return DateFormat('EEE, d MMM yy').format(date);
+    return DateFormat.yMEd().format(DateTime.fromMillisecondsSinceEpoch(date));
   }
 
   formatTime(date) {
-    return DateFormat('H:mm').format(date);
+    return DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(date));
   }
 
   Widget cell(value, background) {
     return Container(
         decoration: BoxDecoration(
-          color: background, // Set the background color here
+          color: background,
         ),
         padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
         child: Text(value));
   }
 
-  Widget button(text, overlayColor, borderColor, textColor) {
-    return ElevatedButton(
-      onPressed: () {
-        // Add your cancel button action here
-        print('Cancel button pressed');
-      },
-      style: ButtonStyle(
-        overlayColor: MaterialStateProperty.all<Color>(overlayColor),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(2.0),
-            side: BorderSide(
-              color: borderColor,
-              width: 1.0,
-            ),
-          ),
-        ),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: textColor,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     return Container(
         padding: EdgeInsets.all(16),
         margin: EdgeInsets.only(top: 16, bottom: 16),
         decoration: BoxDecoration(
-          color: Color.fromARGB(
-              255, 215, 209, 209), // Set the background color here
+          color: Color.fromARGB(255, 215, 209, 209),
         ),
         child: Column(
           children: [
@@ -71,7 +45,9 @@ class ScheduleItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(this.formatdate(this.booking.from),
+                    Text(
+                        formatdate(
+                            booking.scheduleDetailInfo?.startPeriodTimestamp),
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w700)),
                     Text("1 lesson", style: TextStyle(fontSize: 14))
@@ -87,14 +63,24 @@ class ScheduleItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                          this.formatTime(this.booking.from) +
+                          formatTime(booking
+                                  .scheduleDetailInfo?.startPeriodTimestamp) +
                               '-' +
-                              this.formatTime(this.booking.to),
+                              formatTime(booking
+                                  .scheduleDetailInfo?.endPeriodTimestamp),
                           style: TextStyle(fontSize: 18)),
+                      Spacer(),
                       Container(
                           padding: EdgeInsets.fromLTRB(15, 4, 0, 4),
                           child: button("Cancel", Colors.redAccent, Colors.red,
-                              Colors.red))
+                              Colors.red, onPressed: () async {
+                            final res =
+                                await ScheduleService.cancelABookedClass(
+                                    booking.id, authProvider.getAccessToken());
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(res['message'].toString())));
+                          }))
                     ],
                   ),
                   Container(
@@ -119,7 +105,8 @@ class ScheduleItem extends StatelessWidget {
                             )),
                         Container(
                           padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
-                          child: Text(this.booking.note ?? ''),
+                          alignment: Alignment.topLeft,
+                          child: Text(booking.studentRequest ?? ''),
                         )
                       ]))
                 ],
@@ -135,5 +122,38 @@ class ScheduleItem extends StatelessWidget {
                     Colors.grey))
           ],
         ));
+  }
+
+  Widget button(text, overlayColor, borderColor, textColor, {onPressed}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        overlayColor: MaterialStateProperty.all<Color>(overlayColor),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(2.0),
+            side: BorderSide(
+              color: borderColor,
+              width: 1.0,
+            ),
+          ),
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: textColor,
+        ),
+      ),
+    );
+  }
+
+  isActiveGoToMeeting(BookingInfo bookingInfo) {
+    final now = DateTime.now();
+    final start = DateTime.fromMillisecondsSinceEpoch(
+        bookingInfo.scheduleDetailInfo!.startPeriodTimestamp);
+    return (now.day == start.day &&
+        now.month == start.month &&
+        now.year == start.year);
   }
 }
