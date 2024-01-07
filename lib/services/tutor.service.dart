@@ -8,7 +8,7 @@ class TutorService {
   static Future<List<TutorInfo>> getTutors(
       String token, int perPage, int page) async {
     final url =
-        Uri.parse(BaseUrl.baseUrl + 'tutor/more?perPage=$perPage&page=$page');
+        Uri.parse('${BaseUrl.baseUrl}tutor/more?perPage=$perPage&page=$page');
 
     final response = await http.get(
       url,
@@ -33,7 +33,7 @@ class TutorService {
   }
 
   static Future<Tutor> getTutorById(String token, String id) async {
-    final url = Uri.parse(BaseUrl.baseUrl + 'tutor/$id');
+    final url = Uri.parse('${BaseUrl.baseUrl}tutor/$id');
 
     final response = await http.get(url, headers: {
       "Content-Type": "application/json",
@@ -88,7 +88,7 @@ class TutorService {
   }
 
   static addAndRemoveTutorFavorite(String tutorId, String token) async {
-    final url = Uri.parse(BaseUrl.baseUrl + 'user/manageFavoriteTutor');
+    final url = Uri.parse('${BaseUrl.baseUrl}user/manageFavoriteTutor');
     final response = await http.post(
       url,
       headers: {

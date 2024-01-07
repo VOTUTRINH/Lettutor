@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/course/course.dart';
+import 'package:individual_project/models/course/topic.dart';
 import 'package:individual_project/pages/courses/topic-detail.dart';
 import 'package:individual_project/services/course.service.dart';
 import 'package:individual_project/widgets/appBar.dart';
@@ -29,19 +30,6 @@ class _CourseDetailPage extends State<CourseDetailPage> {
     }
   }
 
-  List<String> topics = [
-    "Foods You Love",
-    "Your Job",
-    "Playing and Watching Sports",
-    "The Best Pet",
-    "Having Fun in Your Free Time",
-    "Your Daily Routine",
-    "Childhood Memories",
-    "Your Family Members",
-    "Your Hometown",
-    "Shopping Habits"
-  ];
-
   Widget title(content) {
     return Container(
       alignment: Alignment.topLeft,
@@ -53,7 +41,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
     );
   }
 
-  Widget topicCard(index, content) {
+  Widget topicCard(index, Topic content) {
     return Container(
         height: 140,
         padding: EdgeInsets.only(left: 12, right: 12),
@@ -62,7 +50,9 @@ class _CourseDetailPage extends State<CourseDetailPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TopicDetailPage(),
+                builder: (context) => TopicDetailPage(
+                  course: _course!,
+                ),
               ),
             );
           },
@@ -78,7 +68,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
               children: [
                 Text(index.toString() + '.'),
                 Text(
-                  content,
+                  content.name,
                   style: TextStyle(fontSize: 16),
                 )
               ],
@@ -188,13 +178,11 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                               ...[
                                 {
                                   "question": "Why take this course",
-                                  "answer":
-                                      "Our world is rapidly changing thanks to new technology, and the vocabulary needed to discuss modern life is evolving almost daily. In this course you will learn the most up-to-date terminology from expertly crafted lessons as well from your native-speaking tutor",
+                                  "answer": _course?.reason ?? '',
                                 },
                                 {
                                   "question": "What will you be able to do",
-                                  "answer":
-                                      "This course covers vocabulary at the CEFR A2 level. You will build confidence while learning to speak about a variety of common, everyday topics. In addition, you will build implicit grammar knowledge as your tutor models correct answers and corrects your mistakes.",
+                                  "answer": _course?.purpose ?? ''
                                 }
                               ].map((e) => Column(children: [
                                     Row(children: [
@@ -239,7 +227,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                                 ],
                               ),
                               title("List Topics"),
-                              ...topics
+                              ..._course!.topics
                                   .asMap()
                                   .entries
                                   .map((content) =>

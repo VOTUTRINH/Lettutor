@@ -5,6 +5,8 @@ import 'package:individual_project/pages/schedule/widgets/Info.dart';
 import 'package:individual_project/pages/schedule/widgets/text-field-dialog.dart';
 import 'package:individual_project/services/schedule.service.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleItem extends StatelessWidget {
@@ -31,6 +33,13 @@ class ScheduleItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    final base64Decoded = base64.decode(base64.normalize(
+        booking.studentMeetingLink.split("token=")[1].split(".")[1]));
+    final urlObject = utf8.decode(base64Decoded);
+    final jsonRes = json.decode(urlObject);
+    final String roomId = jsonRes['room'];
+
     return Container(
         padding: EdgeInsets.all(16),
         margin: EdgeInsets.only(top: 16, bottom: 16),
@@ -74,12 +83,22 @@ class ScheduleItem extends StatelessWidget {
                           padding: EdgeInsets.fromLTRB(15, 4, 0, 4),
                           child: button("Cancel", Colors.redAccent, Colors.red,
                               Colors.red, onPressed: () async {
-                            final res =
-                                await ScheduleService.cancelABookedClass(
-                                    booking.id, authProvider.getAccessToken());
+                            final now = DateTime.now();
+                            final start = DateTime.fromMillisecondsSinceEpoch(
+                                booking
+                                    .scheduleDetailInfo!.startPeriodTimestamp);
+                            if (start.isAfter(now) &&
+                                now.difference(start).inHours.abs() >= 2) {
+                              final res =
+                                  await ScheduleService.cancelABookedClass(
+                                      booking.id,
+                                      authProvider.getAccessToken());
 
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(res['message'].toString())));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text(res['message'].toString())));
+                            }
                           }))
                     ],
                   ),
@@ -106,7 +125,8 @@ class ScheduleItem extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
                           alignment: Alignment.topLeft,
-                          child: Text(booking.studentRequest ?? ''),
+                          child: Text(booking.studentRequest ??
+                              'Currently there are no requests for this class. Please write down any requests for the teacher.'),
                         )
                       ]))
                 ],
@@ -115,11 +135,22 @@ class ScheduleItem extends StatelessWidget {
             Container(
                 alignment: Alignment.topRight,
                 padding: EdgeInsets.fromLTRB(15, 4, 0, 4),
-                child: button(
-                    "Go to meeting",
-                    Color.fromARGB(255, 214, 206, 206),
-                    Color.fromARGB(255, 167, 161, 160),
-                    Colors.grey))
+                child: isActiveGoToMeeting(booking)
+                    ? button("Go to meeting", Colors.grey[100], Colors.blue,
+                        Colors.blue, onPressed: () async {
+                        if (isActiveGoToMeeting(booking)) {
+                          var jitsiMeet = JitsiMeet();
+                          final options = JitsiMeetConferenceOptions(
+                              room: roomId,
+                              serverURL: "https://meet.lettutor.com");
+                          await jitsiMeet.join(options);
+                        }
+                      })
+                    : button(
+                        "Go to meeting",
+                        Color.fromARGB(255, 214, 206, 206),
+                        Color.fromARGB(255, 167, 161, 160),
+                        Colors.grey))
           ],
         ));
   }

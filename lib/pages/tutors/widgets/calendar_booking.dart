@@ -52,7 +52,12 @@ class _CalendarBookingState extends State<CalendarBooking> {
       getSchedulesByTutorId(authProvider.getAccessToken(), widget.tutorId);
     }
     return isLoading
-        ? Container(child: Text("Loading...")) //TODO:  custom loading
+        ? const SizedBox(
+            height: 50,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
         : Scaffold(
             appBar: AppBar(title: Text("List Booking")),
             body: SingleChildScrollView(

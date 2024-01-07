@@ -107,7 +107,12 @@ class _ListTutorsState extends State<ListTutorsView> {
                               feedbacks: _tutorInfos[index].feedbacks);
                         }),
                   )
-                : Container(),
+                : const SizedBox(
+                    height: 50,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
           ],
         ));
   }
