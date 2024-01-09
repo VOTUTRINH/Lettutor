@@ -52,7 +52,7 @@ class _TutorItemState extends State<TutorItem> {
                       ),
                     ),
                     Positioned(
-                      top: 10.0, // Adjust the top and right values as needed
+                      top: 10.0,
                       right: 10.0,
                       child: InkWell(
                         onTap: () {

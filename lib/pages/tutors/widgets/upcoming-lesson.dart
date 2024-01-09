@@ -23,7 +23,7 @@ class _UpcomingLessonState extends State<UpcomingLesson> {
 
     if (mounted) {
       setState(() {
-        totalLessonTime = Duration(hours: total);
+        totalLessonTime = Duration(minutes: total);
         nextLesson = nextLes;
         isLoading = false;
       });
@@ -117,14 +117,29 @@ class _UpcomingLessonState extends State<UpcomingLesson> {
                     ),
                     Container(
                         child: Text(
-                            isLoading
+                            totalLessonTime == null
                                 ? ''
-                                : 'Total lession time is ${totalLessonTime?.inHours} hours ${(totalLessonTime! - Duration(hours: (totalLessonTime!.inHours > 0 ? totalLessonTime!.inHours : 0)))?.inMinutes} minutes',
+                                : 'Total lession time is ${covertTotalTime(totalLessonTime as Duration)}',
                             style:
                                 TextStyle(fontSize: 16, color: Colors.white)))
                   ],
                 ),
               )))
     ]);
+  }
+
+  String covertTotalTime(Duration d) {
+    String res = "";
+    Duration total = d;
+    if (total.inHours > 0) {
+      res += "${total.inHours} hours ";
+      total = total - Duration(hours: total.inHours);
+    }
+    if (total.inMinutes > 0) {
+      res += "${total.inMinutes} minutes";
+      total = total - Duration(minutes: total.inMinutes);
+    }
+
+    return res;
   }
 }

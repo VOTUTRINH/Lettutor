@@ -28,7 +28,7 @@ class FeedBackUI extends StatelessWidget {
                   Text(feedback!.createdAt!, style: TextStyle(fontSize: 12))
                 ]),
                 SizedBox(height: 5),
-                StarRating(rating: feedback!.rating.ceil() as double),
+                StarRating(rating: (feedback!.rating.ceil() * 1.0) as double),
                 SizedBox(height: 5),
                 Text(feedback!.content!, style: TextStyle(fontSize: 14))
               ],

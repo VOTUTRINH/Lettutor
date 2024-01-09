@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/models/schedule/schedule.dart';
 import 'package:individual_project/pages/tutors/widgets/avatar.dart';
 import 'package:provider/provider.dart';
 
 class Info extends StatelessWidget {
+  Info({required this.tutor});
+  Tutor tutor;
   @override
   Widget build(BuildContext context) {
     // TODO: pass data
@@ -14,15 +17,13 @@ class Info extends StatelessWidget {
         children: [
           Padding(
               padding: EdgeInsets.only(left: 6, right: 6),
-              child: CircularImage(
-                  imageUrl:
-                      "https://sandbox.api.lettutor.com/avatar/4d54d3d7-d2a9-42e5-97a2-5ed38af5789aavatar1684484879187.jpg")),
+              child: CircularImage(imageUrl: tutor.avatar!)),
           Padding(
               padding: EdgeInsets.only(left: 6, right: 6),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Keegan",
+                  Text(tutor.name!,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
                   Row(

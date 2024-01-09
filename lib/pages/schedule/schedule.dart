@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/schedule/booking-info.dart';
 import 'package:individual_project/pages/schedule/widgets/schedule-item.dart';
-import 'package:individual_project/services/respository/booking-repository.dart';
 import 'package:individual_project/services/schedule.service.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
@@ -20,6 +19,21 @@ class _SchedulePageState extends State<SchedulePage> {
   List<BookingInfo> _bookingInfos = [];
   int page = 1;
   int perPage = 10;
+  late ScrollController _scrollController;
+  bool isLoadMore = false;
+  String? token;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(loadMore);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(loadMore);
+    super.dispose();
+  }
 
   getListSchedule(int page, int perPage, String token) async {
     final bookingInfos =
@@ -31,9 +45,37 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
+  void loadMore() async {
+    if (_scrollController.position.atEdge &&
+        _scrollController.position.pixels != 0) {
+      setState(() {
+        isLoadMore = true;
+        page++;
+      });
+
+      try {
+        final res = await ScheduleService.getScheduleOrHistory(
+            page, perPage, 1, token as String);
+        if (mounted) {
+          setState(() {
+            _bookingInfos.addAll(res);
+            isLoadMore = false;
+          });
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+
+    setState(() {
+      token = authProvider.getAccessToken();
+    });
+
     if (isLoading) {
       getListSchedule(page, perPage, authProvider.getAccessToken());
     }
@@ -41,6 +83,7 @@ class _SchedulePageState extends State<SchedulePage> {
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
+            controller: _scrollController,
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
                 margin: EdgeInsets.only(top: 70),
@@ -99,74 +142,32 @@ class _SchedulePageState extends State<SchedulePage> {
                         ],
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      padding: EdgeInsets.fromLTRB(30, 48, 30, 16),
-                      child: Column(
-                        children: [
-                          Container(
-                              alignment: Alignment.topLeft,
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: Text(
-                                "Latest Book",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w700),
-                              )),
-                          Table(
-                            border: TableBorder.all(),
-                            children: [
-                              TableRow(children: [
-                                TableCell(
-                                    child: cell("Name",
-                                        Color.fromARGB(255, 233, 225, 225))),
-                                TableCell(
-                                  child: cell("", Colors.white),
-                                ), // A file
-                              ]),
-                              TableRow(children: [
-                                TableCell(
-                                    child: cell("Page",
-                                        Color.fromARGB(255, 233, 225, 225))),
-                                TableCell(
-                                  child: cell("0", Colors.white),
-                                )
-                              ]),
-                              TableRow(children: [
-                                TableCell(
-                                    child: cell("Description",
-                                        Color.fromARGB(255, 233, 225, 225))),
-                                TableCell(
-                                  child: cell("", Colors.white),
-                                )
-                              ])
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
                     Divider(
                       color: Colors.grey,
                       thickness: 1.0,
                       indent: 16,
                       endIndent: 16,
                     ),
-                    ..._bookingInfos
-                        .map((e) => Container(
-                            padding: EdgeInsets.only(left: 30, right: 30),
-                            child: ScheduleItem(
-                              booking: e,
-                            )))
-                        .toList()
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _bookingInfos.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 15),
+                          child: ScheduleItem(
+                            booking: _bookingInfos[index],
+                          ),
+                        );
+                      },
+                    ),
+                    if (isLoadMore)
+                      const SizedBox(
+                        height: 50,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
                   ],
                 ))));
-  }
-
-  Widget cell(value, background) {
-    return Container(
-        decoration: BoxDecoration(
-          color: background,
-        ),
-        padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
-        child: Text(value));
   }
 }

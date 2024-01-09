@@ -76,7 +76,7 @@ class HistoryItem extends StatelessWidget {
                     Text("1 day ago", style: TextStyle(fontSize: 14))
                   ],
                 )),
-            Info(),
+            // Info(),
             Container(
                 padding: EdgeInsets.fromLTRB(20, 12, 20, 20),
                 margin: EdgeInsets.only(bottom: 24),

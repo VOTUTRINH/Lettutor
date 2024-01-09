@@ -62,7 +62,7 @@ class ScheduleItem extends StatelessWidget {
                     Text("1 lesson", style: TextStyle(fontSize: 14))
                   ],
                 )),
-            Info(),
+            Info(tutor: booking.scheduleDetailInfo!.scheduleInfo!.tutorInfo!),
             Container(
               padding: EdgeInsets.fromLTRB(20, 12, 20, 20),
               decoration: BoxDecoration(color: Colors.white),
