@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/schedule/booking-info.dart';
 import 'package:individual_project/services/user.service.dart';
 import 'package:intl/intl.dart';
+import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 
 class UpcomingLesson extends StatefulWidget {
@@ -91,7 +94,26 @@ class _UpcomingLessonState extends State<UpcomingLesson> {
                           ]),
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            if (nextLesson != null) {
+                              final base64Decoded = base64.decode(base64
+                                  .normalize(nextLesson!.studentMeetingLink
+                                      .split("token=")[1]
+                                      .split(".")[1]));
+                              final urlObject = utf8.decode(base64Decoded);
+                              final jsonRes = json.decode(urlObject);
+                              final String roomId = jsonRes['room'];
+                              final String tokenMeeting = nextLesson!
+                                  .studentMeetingLink
+                                  .split("token=")[1];
+                              var jitsiMeet = JitsiMeet();
+                              final options = JitsiMeetConferenceOptions(
+                                  room: roomId,
+                                  serverURL: "https://meet.lettutor.com",
+                                  token: tokenMeeting);
+                              await jitsiMeet.join(options);
+                            }
+                          },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(

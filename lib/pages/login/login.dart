@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/user/user.dart';
 import 'package:individual_project/pages/login/widgets/banner.dart';
+import 'package:individual_project/pages/login/widgets/login_with.dart';
 import 'package:individual_project/pages/login/widgets/textField.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
 import 'package:individual_project/services/auth.service.dart';
-import 'package:individual_project/services/respository/account-repository.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,7 +43,6 @@ class _LoginPage extends State<LoginPage> {
   Widget build(BuildContext context) {
     double vw4 = MediaQuery.of(context).size.width * 0.04;
     double vw6 = MediaQuery.of(context).size.width * 0.06;
-    AccountRepository accountRepository = context.watch<AccountRepository>();
     AuthProvider authProvider = context.watch<AuthProvider>();
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
@@ -182,29 +181,7 @@ class _LoginPage extends State<LoginPage> {
                             height: 1.5),
                         textAlign: TextAlign.center,
                       )),
-                  Container(
-                      child: Center(
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                        ...[
-                          'assets/images/facebook-logo.svg',
-                          'assets/images/google-logo.svg',
-                          'assets/images/mobile-logo.svg'
-                        ]
-                            .map((e) => Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      e,
-                                      width: 40,
-                                      height: 40,
-                                    ),
-                                    SizedBox(width: 10),
-                                  ],
-                                ))
-                            .toList()
-                      ]))),
+                  // Container(child: Center(child: LoginWith())),
                   Container(
                       margin: EdgeInsets.only(top: 10),
                       child: Center(

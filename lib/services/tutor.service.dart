@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:individual_project/models/tutor/tutor-info.dart';
 import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/services/base_url.dart';
@@ -53,20 +54,31 @@ class TutorService {
   static Future<List<TutorInfo>> searchTutor(
     int page,
     int perPage,
-    String token, {
-    String search = "",
-    List<String> specialties = const [],
-  }) async {
+    String token,
+    String search,
+    List<String> specialties,
+    List<NationalityFilter?> nationalities,
+  ) async {
+    Map<String, bool> nationalitiesMap = {
+      for (var filter in nationalities) filter!.key: filter.isSelected
+    };
+
     final Map<String, dynamic> args = {
-      "page": page,
+      "page": page.toString(),
       "perPage": perPage,
       "search": search,
       "filters": {
+        "date": null,
+        "nationality": nationalitiesMap,
         "specialties": specialties,
+        "tutoringTimeAvailable": [null, null]
       },
     };
 
-    final url = Uri.parse(BaseUrl.baseUrl + 'tutor/search');
+    if (search.isEmpty) args.remove("search");
+    if (nationalitiesMap.isEmpty && specialties.isEmpty) args.remove("filters");
+
+    final url = Uri.parse('${BaseUrl.baseUrl}tutor/search');
 
     final response = await http.post(
       url,

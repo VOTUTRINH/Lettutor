@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/list-tutors-view.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
-import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
-import 'package:provider/provider.dart';
 
 class ListTutorsPage extends StatelessWidget {
   @override

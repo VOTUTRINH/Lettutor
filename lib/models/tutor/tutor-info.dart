@@ -82,49 +82,51 @@ class TutorInfo {
   });
 
   TutorInfo.fromJson(Map<String, dynamic> json) {
-    level = json['level'];
-    email = json['email'];
-    google = json['google'];
-    facebook = json['facebook'];
-    apple = json['apple'];
-    avatar = json['avatar'];
-    name = json['name'];
-    country = json['country'];
-    phone = json['phone'];
-    language = json['language'];
-    birthday = json['birthday'];
-    requestPassword = json['requestPassword'];
-    isActivated = json['isActivated'];
-    isPhoneActivated = json['isPhoneActivated'];
-    requireNote = json['requireNote'];
-    timezone = json['timezone'];
-    phoneAuth = json['phoneAuth'];
-    isPhoneAuthActivated = json['isPhoneAuthActivated'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    deletedAt = json['deletedAt'];
+    level = json['level'] ?? "";
+    email = json['email'] ?? "";
+    google = json['google'] ?? "";
+    facebook = json['facebook'] ?? "";
+    apple = json['apple'] ?? "";
+    avatar = json['avatar'] ?? "";
+    name = json['name'] ?? "";
+    country = json['country'] ?? "";
+    phone = json['phone'] ?? "";
+    language = json['language'] ?? "";
+    birthday = json['birthday'] ?? "";
+    requestPassword = json['requestPassword'] ?? false;
+    isActivated = json['isActivated'] ?? false;
+    isPhoneActivated = json['isPhoneActivated'] ?? false;
+    requireNote = json['requireNote'] ?? "";
+    timezone = json['timezone'] ?? 0;
+    phoneAuth = json['phoneAuth'] ?? "";
+    isPhoneAuthActivated = json['isPhoneAuthActivated'] ?? false;
+    createdAt = json['createdAt'] ?? "";
+    updatedAt = json['updatedAt'] ?? "";
+    deletedAt = json['deletedAt'] ?? "";
     if (json['feedbacks'] != null) {
       feedbacks = [];
       json['feedbacks'].forEach((v) {
         feedbacks.add(FeedBack.fromJson(v));
       });
+    } else {
+      feedbacks = [];
     }
-    id = json['id'];
-    userId = json['userId'];
-    video = json['video'];
-    bio = json['bio'];
-    education = json['education'];
-    experience = json['experience'];
-    profession = json['profession'];
-    accent = json['accent'];
-    targetStudent = json['targetStudent'];
-    interests = json['interests'];
-    languages = json['languages'];
-    specialties = json['specialties'];
-    resume = json['resume'];
-    isNative = json['isNative'];
-    price = json['price'];
-    isOnline = json['isOnline'];
+    id = json['id'] ?? "";
+    userId = json['userId'] ?? "";
+    video = json['video'] ?? "";
+    bio = json['bio'] ?? "";
+    education = json['education'] ?? "";
+    experience = json['experience'] ?? "";
+    profession = json['profession'] ?? "";
+    accent = json['accent'] ?? "";
+    targetStudent = json['targetStudent'] ?? "";
+    interests = json['interests'] ?? "";
+    languages = json['languages'] ?? "";
+    specialties = json['specialties'] ?? "";
+    resume = json['resume'] ?? "";
+    isNative = json['isNative'] ?? false;
+    price = json['price'] ?? 0;
+    isOnline = json['isOnline'] ?? false;
   }
 
   Map<String, dynamic> toJson() {

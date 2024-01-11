@@ -79,4 +79,38 @@ class AuthService {
       };
     }
   }
+
+  static Future<Map<String, Object>> loginWithGoogle(
+      String accessToken, AuthProvider authProvider) async {
+    try {
+      var url = Uri.parse('${BaseUrl.baseUrl}auth/google');
+      var response = await http.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'access_token': accessToken,
+          }));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        final tokens = Tokens.fromJson(responseData["tokens"]);
+        final userInfo = UserInfo.fromJson(responseData["user"]);
+        authProvider.logIn(userInfo, tokens);
+        return {
+          'isSuccess': true,
+          'message': 'Login successfully',
+        };
+      } else {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        return {
+          'isSuccess': false,
+          'message': responseData['message'],
+        };
+      }
+    } on Error catch (_, error) {
+      return {
+        'isSuccess': false,
+        'message': error.toString(),
+      };
+    }
+  }
 }

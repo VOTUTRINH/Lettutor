@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
 import 'package:individual_project/global.state/tutor-filter.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 class Input extends StatelessWidget {
@@ -40,33 +41,34 @@ class Input extends StatelessWidget {
   }
 }
 
-class Filter extends StatefulWidget {
-  Filter({Key? key, this.specialties}) : super(key: key);
+class Filter extends StatelessWidget {
+  Filter(
+      {Key? key,
+      this.specialties,
+      this.nameController,
+      this.countryController,
+      this.controller})
+      : super(key: key);
 
   List<dynamic>? specialties;
-  @override
-  _FilterState createState() => _FilterState();
-}
+  final TextEditingController? nameController;
+  final TextEditingController? countryController;
+  final MultiSelectController<NationalityFilter>? controller;
 
-class _FilterState extends State<Filter> {
-  final TextEditingController nameController = new TextEditingController();
-  final TextEditingController countryController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final tags = [
-      "ALL",
-      "English for kids",
-      "English for Business",
-      "Conversational",
-      "STARTERS",
-      "MOVERS",
-      "FLYERS",
-      "PET",
-      "IELTS"
+    final listNationalityOptions = [
+      ValueItem(
+          label: 'Foreign Tutor',
+          value: NationalityFilter(key: 'isForeign', isSelected: true)),
+      ValueItem(
+          label: 'VietNamese Tutor',
+          value: NationalityFilter(key: 'isVietnamese', isSelected: true)),
+      ValueItem(
+          label: 'Native English Tutor',
+          value: NationalityFilter(key: 'isNative', isSelected: true)),
     ];
-
     final tutorFilter = Provider.of<TutorFilter>(context);
-
     return Container(
       alignment: Alignment.topLeft,
       margin: EdgeInsets.only(top: 10),
@@ -90,13 +92,34 @@ class _FilterState extends State<Filter> {
                 tutorFilter.setName(value);
               },
             ),
-            Input(
-                placeholder: "Select tutor country",
-                width: 130,
-                controller: countryController,
-                onChanged: (value) {
-                  tutorFilter.setCountry(value);
-                })
+            SizedBox(width: 10),
+            MultiSelectDropDown<NationalityFilter>(
+              showClearIcon: true,
+              controller: controller,
+              hint: 'Search tutor nationality',
+              dropdownHeight: 150,
+              onOptionSelected: (options) {
+                tutorFilter
+                    .addNationalityFilter(options.map((e) => e.value).toList());
+              },
+              options: listNationalityOptions,
+              maxItems: 3,
+              selectionType: SelectionType.multi,
+              chipConfig: const ChipConfig(
+                  wrapType: WrapType.wrap,
+                  labelColor: Colors.black,
+                  backgroundColor: Color.fromARGB(255, 221, 218, 218)),
+              optionTextStyle: const TextStyle(fontSize: 12),
+              selectedOptionIcon: const Icon(
+                Icons.check_circle,
+                color: Colors.blue,
+              ),
+              selectedOptionTextColor: Colors.blue,
+              searchEnabled: true,
+              onOptionRemoved: (index, option) {
+                tutorFilter.removeNationalityFilter(option.value!.key);
+              },
+            ),
           ]))
         ]),
         Container(
@@ -124,18 +147,10 @@ class _FilterState extends State<Filter> {
         Container(
           alignment: Alignment.topLeft,
           child: Wrap(
-            children:
-                widget.specialties!.map((tag) => Tag(value: tag)).toList(),
+            children: specialties!.map((tag) => Tag(value: tag)).toList(),
           ),
         ),
       ]),
     );
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    countryController.dispose();
-    super.dispose();
   }
 }

@@ -1,6 +1,4 @@
 import 'package:individual_project/models/schedule/schedule_detail.dart';
-import 'package:individual_project/models/tutor/tutor-info.dart';
-import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/models/user/user-info.dart';
 
 class Schedule {
