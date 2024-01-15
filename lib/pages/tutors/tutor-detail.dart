@@ -4,7 +4,7 @@ import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/pages/tutors/widgets/calendar_booking.dart';
 import 'package:individual_project/pages/tutors/widgets/feedback.dart';
 import 'package:individual_project/pages/tutors/widgets/video.dart';
-import 'package:individual_project/pages/tutors/widgets/avatar.dart';
+import 'package:individual_project/widgets/avatar.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/models/feedback.dart';
 import 'package:individual_project/services/tutor.service.dart';

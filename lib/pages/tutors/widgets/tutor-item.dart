@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/pages/tutors/tutor-detail.dart';
-import 'package:individual_project/pages/tutors/widgets/avatar.dart';
+import 'package:individual_project/widgets/avatar.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/services/tutor.service.dart';
 import 'package:provider/provider.dart';

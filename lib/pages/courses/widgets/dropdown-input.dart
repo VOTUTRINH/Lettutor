@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
-class SearchableDropdown extends StatefulWidget {
+class DropdownInput extends StatefulWidget {
   @override
-  _SearchableDropdownState createState() => _SearchableDropdownState();
+  _DropdownInputState createState() => _DropdownInputState();
 
   final List<String> options;
   final String hintText;
 
-  SearchableDropdown({required this.options, required this.hintText});
+  DropdownInput({required this.options, required this.hintText});
 }
 
-class _SearchableDropdownState extends State<SearchableDropdown> {
+class _DropdownInputState extends State<DropdownInput> {
   // Define a list of items that you want to show in the men
 
   // Define a variable that holds the currently selected item from the menu

@@ -19,10 +19,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final accountRepository = new AccountRepository();
-  final tutorRepository = new TutorRepository();
-  final feedbackRepository = new FeedbackRepository();
-  final bookingRepository = new BookingRepository();
   final TutorFilter tutorFilter = new TutorFilter();
   final AuthProvider authProvider = new AuthProvider();
 
@@ -30,11 +26,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => accountRepository),
-        ChangeNotifierProvider(create: (context) => tutorRepository),
         ChangeNotifierProvider(create: (context) => tutorFilter),
-        ChangeNotifierProvider(create: (context) => feedbackRepository),
-        ChangeNotifierProvider(create: (context) => bookingRepository),
         ChangeNotifierProvider(create: (context) => authProvider),
       ],
       child: MaterialApp(

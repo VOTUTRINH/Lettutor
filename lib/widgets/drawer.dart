@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/user/user-info.dart';
 import 'package:individual_project/pages/courses/courses.dart';
 import 'package:individual_project/pages/history/history.dart';
 import 'package:individual_project/pages/schedule/schedule.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
+import 'package:individual_project/widgets/avatar.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class DrawerCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    UserInfo user = authProvider.userLoggedIn;
     return Drawer(
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text("John Doe"),
-            accountEmail: Text("johndoe@example.com"),
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.person),
+            onDetailsPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ListTutorsPage(),
+              ),
             ),
+            accountName: Text(user.name),
+            accountEmail: Text(user.email),
+            currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: CircularImage(imageUrl: user.avatar)),
           ),
           ...[
-            // {
-            //   "text": "Recurring Lesson Schedule",
-            //   "Icon": Icons.calendar_today_outlined,
-
-            // },
             {
               "text": "Tutor",
               "Icon": Icons.group_outlined,

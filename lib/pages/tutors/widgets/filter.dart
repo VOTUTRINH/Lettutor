@@ -1,18 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
-import 'package:individual_project/pages/tutors/widgets/upcoming-lesson.dart';
 import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 class Input extends StatelessWidget {
   const Input(
-      {this.placeholder, this.width = 150, this.onChanged, this.controller});
+      {this.placeholder,
+      this.width = 150,
+      this.onChanged,
+      this.controller,
+      this.debounce});
 
   final String? placeholder;
   final double? width;
   final Function? onChanged;
   final TextEditingController? controller;
+  final Timer? debounce;
 
   @override
   Widget build(BuildContext context) {
@@ -47,13 +53,15 @@ class Filter extends StatelessWidget {
       this.specialties,
       this.nameController,
       this.countryController,
-      this.controller})
+      this.nationalityController,
+      this.debounce})
       : super(key: key);
 
   List<dynamic>? specialties;
   final TextEditingController? nameController;
   final TextEditingController? countryController;
-  final MultiSelectController<NationalityFilter>? controller;
+  final MultiSelectController<NationalityFilter>? nationalityController;
+  late Timer? debounce;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +77,7 @@ class Filter extends StatelessWidget {
           value: NationalityFilter(key: 'isNative', isSelected: true)),
     ];
     final tutorFilter = Provider.of<TutorFilter>(context);
+
     return Container(
       alignment: Alignment.topLeft,
       margin: EdgeInsets.only(top: 10),
@@ -83,43 +92,54 @@ class Filter extends StatelessWidget {
         // SET UP DROPDOWN, CALENDAR,...
         Row(children: [
           Flexible(
-              child: Wrap(children: [
+              child: Row(children: [
             Input(
               placeholder: "Enter tutor name",
-              width: 160,
-              controller: nameController,
+              width: 150,
+              controller: nameController!,
               onChanged: (value) {
-                tutorFilter.setName(value);
+                if (debounce?.isActive ?? false) debounce?.cancel();
+                debounce = Timer(const Duration(milliseconds: 500), () {
+                  tutorFilter.setName(value);
+                });
               },
             ),
             SizedBox(width: 10),
-            MultiSelectDropDown<NationalityFilter>(
-              showClearIcon: true,
-              controller: controller,
-              hint: 'Search tutor nationality',
-              dropdownHeight: 150,
-              onOptionSelected: (options) {
-                tutorFilter
-                    .addNationalityFilter(options.map((e) => e.value).toList());
-              },
-              options: listNationalityOptions,
-              maxItems: 3,
-              selectionType: SelectionType.multi,
-              chipConfig: const ChipConfig(
-                  wrapType: WrapType.wrap,
-                  labelColor: Colors.black,
-                  backgroundColor: Color.fromARGB(255, 221, 218, 218)),
-              optionTextStyle: const TextStyle(fontSize: 12),
-              selectedOptionIcon: const Icon(
-                Icons.check_circle,
-                color: Colors.blue,
-              ),
-              selectedOptionTextColor: Colors.blue,
-              searchEnabled: true,
-              onOptionRemoved: (index, option) {
-                tutorFilter.removeNationalityFilter(option.value!.key);
-              },
-            ),
+            Container(
+                width: 150,
+                child: MultiSelectDropDown<NationalityFilter>(
+                  showClearIcon: true,
+                  controller: nationalityController!,
+                  hint: 'Search tutor nationality',
+                  hintStyle:
+                      TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
+                  dropdownHeight: 150,
+                  onOptionSelected: (options) {
+                    tutorFilter.addNationalityFilter(
+                        options.map((e) => e.value).toList());
+                  },
+                  options: listNationalityOptions,
+                  selectionType: SelectionType.multi,
+                  chipConfig: const ChipConfig(
+                      wrapType: WrapType.wrap,
+                      labelColor: Colors.black,
+                      backgroundColor: Color.fromARGB(255, 221, 218, 218),
+                      labelStyle: TextStyle(overflow: TextOverflow.ellipsis)),
+                  optionTextStyle: const TextStyle(
+                      fontSize: 12, overflow: TextOverflow.ellipsis),
+                  selectedOptionIcon: const Icon(
+                    Icons.check_circle,
+                    color: Colors.blue,
+                  ),
+                  selectedOptionTextColor: Colors.blue,
+                  searchEnabled: true,
+                  onOptionRemoved: (index, option) {
+                    if (debounce?.isActive ?? false) debounce?.cancel();
+                    debounce = Timer(const Duration(milliseconds: 500), () {
+                      tutorFilter.removeNationalityFilter(option.value!.key);
+                    });
+                  },
+                )),
           ]))
         ]),
         Container(

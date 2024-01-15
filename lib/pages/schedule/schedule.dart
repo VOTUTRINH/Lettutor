@@ -22,6 +22,7 @@ class _SchedulePageState extends State<SchedulePage> {
   late ScrollController _scrollController;
   bool isLoadMore = false;
   String? token;
+  String sort = 'asc';
 
   @override
   void initState() {
@@ -36,8 +37,8 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   getListSchedule(int page, int perPage, String token) async {
-    final bookingInfos =
-        await ScheduleService.getScheduleOrHistory(page, perPage, 1, token);
+    final bookingInfos = await ScheduleService.getScheduleOrHistory(
+        page, perPage, 1, token, sort);
 
     setState(() {
       _bookingInfos = bookingInfos;
@@ -55,7 +56,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
       try {
         final res = await ScheduleService.getScheduleOrHistory(
-            page, perPage, 1, token as String);
+            page, perPage, 1, token as String, sort as String);
         if (mounted) {
           setState(() {
             _bookingInfos.addAll(res);

@@ -90,11 +90,11 @@ class CoursesPageState extends State<CoursesPage> {
                         "LiveTutor has built the most quality, methodical and scientific courses in the fields of life for those who are in need of improving their knowledge of the fields."),
                     Wrap(
                       children: [
-                        SearchableDropdown(
+                        DropdownInput(
                             options: levels, hintText: "Selected Level"),
-                        SearchableDropdown(
+                        DropdownInput(
                             options: levels, hintText: "Selected Level"),
-                        SearchableDropdown(
+                        DropdownInput(
                             options: levels, hintText: "Selected Level")
                       ],
                     ),

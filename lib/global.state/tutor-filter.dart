@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 class NationalityKey {
   static const String isForeign = 'isForeign';
@@ -21,6 +22,7 @@ class TutorFilter extends ChangeNotifier {
   late String country = "";
   late bool isSearching = false;
   List<NationalityFilter?> selectedNationality = [];
+
   var nonSelectedNationality = [
     NationalityFilter(key: NationalityKey.isForeign, isSelected: false),
     NationalityFilter(key: NationalityKey.isVietnamese, isSelected: false),
@@ -29,7 +31,6 @@ class TutorFilter extends ChangeNotifier {
 
   setSearching(bool isSearching) {
     this.isSearching = isSearching;
-    notifyListeners();
   }
 
   setspecialties(String specialties) {
@@ -48,9 +49,10 @@ class TutorFilter extends ChangeNotifier {
   }
 
   addNationalityFilter(List<NationalityFilter?> nationalityFilters) {
-    isSearching = true;
     if (nationalityFilters.isEmpty) {
       selectedNationality = [];
+      isSearching = true;
+
       return;
     }
     selectedNationality.clear();
@@ -65,6 +67,8 @@ class TutorFilter extends ChangeNotifier {
       selectedNationality
           .sort((a, b) => a?.key == NationalityKey.isVietnamese ? -1 : 1);
     }
+    isSearching = true;
+
     notifyListeners();
   }
 
@@ -99,9 +103,6 @@ class TutorFilter extends ChangeNotifier {
   }
 
   isFilterTutor() {
-    return (name.trim() != "" ||
-            country.trim() != "" ||
-            selectedNationality.isNotEmpty) &&
-        isSearching == true;
+    return isSearching == true;
   }
 }

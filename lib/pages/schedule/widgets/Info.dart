@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/models/schedule/schedule.dart';
-import 'package:individual_project/pages/tutors/widgets/avatar.dart';
+import 'package:individual_project/widgets/avatar.dart';
 import 'package:provider/provider.dart';
 
 class Info extends StatelessWidget {

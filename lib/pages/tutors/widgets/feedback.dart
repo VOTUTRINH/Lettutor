@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/models/user/user-info.dart';
-import 'package:individual_project/pages/tutors/widgets/avatar.dart';
+import 'package:individual_project/widgets/avatar.dart';
 import 'package:individual_project/pages/tutors/widgets/star_rating.dart';
 import 'package:individual_project/models/feedback.dart';
 import 'package:provider/provider.dart';

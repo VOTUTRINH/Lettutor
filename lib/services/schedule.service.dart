@@ -54,9 +54,9 @@ class ScheduleService {
   }
 
   static Future<List<BookingInfo>> getScheduleOrHistory(
-      int page, int perPage, int inFuture, String token) async {
+      int page, int perPage, int inFuture, String token, String sort) async {
     final url = Uri.parse(
-        '${BaseUrl.baseUrl}booking/list/student?page=$page&perPage=$perPage&inFuture=$inFuture&orderBy=meeting&sortBy=asc');
+        '${BaseUrl.baseUrl}booking/list/student?page=$page&perPage=$perPage&inFuture=$inFuture&orderBy=meeting&sortBy=$sort');
 
     final res = await http.get(url, headers: {
       "Authorization": "Bearer $token",
