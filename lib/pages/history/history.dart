@@ -66,7 +66,7 @@ class _HistoryState extends State<HistoryPage> {
 
       try {
         final res = await ScheduleService.getScheduleOrHistory(
-            page, perPage, 1, token as String, sort);
+            page, perPage, 0, token as String, sort);
         if (mounted) {
           setState(() {
             _bookingInfos.addAll(res);
@@ -95,6 +95,7 @@ class _HistoryState extends State<HistoryPage> {
         appBar: AppBar(title: AppBarCustom()),
         endDrawer: DrawerCustom(),
         body: SingleChildScrollView(
+            controller: _scrollController,
             child: Container(
                 padding: EdgeInsets.fromLTRB(10, 35, 10, 35),
                 child: Column(

@@ -1,31 +1,31 @@
 class WalletInfo {
-  final String id;
-  final String userId;
-  final String amount;
-  final bool isBlocked;
-  final String createdAt;
-  final String updatedAt;
-  final int bonus;
+  String? id;
+  String? userId;
+  String? amount;
+  bool? isBlocked;
+  String? createdAt;
+  String? updatedAt;
+  int? bonus;
 
   WalletInfo({
-    required this.id,
-    required this.userId,
-    required this.amount,
-    required this.isBlocked,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.bonus,
+    this.id,
+    this.userId,
+    this.amount,
+    this.isBlocked,
+    this.createdAt,
+    this.updatedAt,
+    this.bonus,
   });
 
   factory WalletInfo.fromJson(Map<String, dynamic> json) {
     return WalletInfo(
-      id: json['id'],
-      userId: json['userId'],
-      amount: json['amount'],
-      isBlocked: json['isBlocked'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      bonus: json['bonus'],
+      id: json['id'] ?? '',
+      userId: json['userId'] ?? '',
+      amount: json['amount'] ?? '',
+      isBlocked: json['isBlocked'] ?? false,
+      createdAt: json['createdAt'] ?? '',
+      updatedAt: json['updatedAt'] ?? '',
+      bonus: json['bonus'] ?? 0,
     );
   }
 

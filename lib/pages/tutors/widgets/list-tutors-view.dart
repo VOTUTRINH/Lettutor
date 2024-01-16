@@ -1,20 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/app-provider.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
-import 'package:individual_project/models/learn-topic.dart';
 import 'package:individual_project/models/tutor/tutor-info.dart';
 import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/pages/tutors/widgets/filter.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:individual_project/services/tutor.service.dart';
+import 'package:individual_project/services/user.service.dart';
 import 'package:individual_project/widgets/free_content.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
 class ListTutorsView extends StatefulWidget {
-  const ListTutorsView({Key? key}) : super(key: key);
+  ListTutorsView({Key? key, this.isLoadMore = false, this.onLoadMoreChange})
+      : super(key: key);
+  bool isLoadMore;
+  final Function? onLoadMoreChange;
   @override
   _ListTutorsState createState() => _ListTutorsState();
 }
@@ -27,7 +31,38 @@ class _ListTutorsState extends State<ListTutorsView> {
   late TextEditingController nameController;
   late TextEditingController countryController;
   late MultiSelectController<NationalityFilter> _controller;
+
   Timer? _debounce;
+
+  int page = 1;
+  int perPage = 10;
+  String? token;
+  late TutorFilter tutorFilter;
+
+  void loadMore() async {
+    setState(() {
+      page++;
+    });
+
+    try {
+      List<TutorInfo> tutorInfos = await getTutorInfos();
+      List<Tutor> tutors = [];
+      for (int i = 0; i < tutorInfos.length; i++) {
+        final tutor =
+            await TutorService.getTutorById(token!, tutorInfos[i].userId);
+        tutors.add(tutor);
+      }
+      if (mounted) {
+        setState(() {
+          _tutors.addAll(tutors);
+          _tutorInfos.addAll(tutorInfos);
+          widget.onLoadMoreChange!();
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   void initState() {
@@ -37,33 +72,18 @@ class _ListTutorsState extends State<ListTutorsView> {
     _controller = MultiSelectController<NationalityFilter>();
   }
 
-  void getTutorList(String token, int perPage, int page,
-      AuthProvider authProvider, TutorFilter tutorFilter) async {
+  void getTutorList(AuthProvider authProvider, AppProvider appProvider) async {
     List<dynamic> specialties = [];
-    // specialties.add(LearnTopic(id: 0, key: 'all', name: 'ALL'));
-    // specialties.addAll(authProvider.userLoggedIn.learnTopics!);
-    // specialties.addAll(authProvider.userLoggedIn.testPreparations!);
 
-    List<TutorInfo> tutorInfos = [];
+    final allTopics = await UserService.getAllLearningTopic(token!);
+    final allTestPreparation = await UserService.getAllTestPreparation(token!);
+    appProvider.load(allTopics, allTestPreparation);
 
-    if (tutorFilter.isFilterTutor()) {
-      tutorFilter.setSearching(true);
-      tutorInfos = await TutorService.searchTutor(
-        page,
-        perPage,
-        token,
-        tutorFilter.getName(),
-        [],
-        tutorFilter.selectedNationality.toList() ?? [],
-      );
-    } else {
-      tutorInfos = await TutorService.getTutors(token, perPage, page);
-    }
-
+    List<TutorInfo> tutorInfos = await getTutorInfos();
     List<Tutor> tutors = [];
     for (int i = 0; i < tutorInfos.length; i++) {
       final tutor =
-          await TutorService.getTutorById(token, tutorInfos[i].userId);
+          await TutorService.getTutorById(token!, tutorInfos[i].userId);
       tutors.add(tutor);
     }
 
@@ -79,14 +99,38 @@ class _ListTutorsState extends State<ListTutorsView> {
     }
   }
 
+  getTutorInfos() async {
+    List<TutorInfo> tutorInfos = [];
+
+    if (tutorFilter.isFilterTutor()) {
+      tutorFilter.setSearching(true);
+      tutorInfos = await TutorService.searchTutor(
+        page,
+        perPage,
+        token!,
+        tutorFilter.getName(),
+        [],
+        tutorFilter.selectedNationality.toList() ?? [],
+      );
+    } else {
+      tutorInfos = await TutorService.getTutors(token!, perPage, page);
+    }
+    return tutorInfos;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tutorFilter = Provider.of<TutorFilter>(context);
     final authProvider = Provider.of<AuthProvider>(context);
-
+    final appProvider = Provider.of<AppProvider>(context);
+    setState(() {
+      token = authProvider.getAccessToken();
+      tutorFilter = Provider.of<TutorFilter>(context);
+    });
     if (isLoading || tutorFilter.isFilterTutor()) {
-      getTutorList(
-          authProvider.getAccessToken(), 9, 1, authProvider, tutorFilter);
+      getTutorList(authProvider, appProvider);
+    }
+    if (widget.isLoadMore) {
+      loadMore();
     }
     return Container(
       padding: EdgeInsets.fromLTRB(30, 33, 30, 49),
@@ -116,8 +160,7 @@ class _ListTutorsState extends State<ListTutorsView> {
                       ? const FreeContentWidget('No available tutors')
                       : ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: this._tutors.length,
+                          itemCount: _tutors.length,
                           itemBuilder: (context, index) {
                             // Sort the tutorList by favorite and rating
                             _tutors.sort((a, b) {

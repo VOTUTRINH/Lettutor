@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/app-provider.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/pages/login/login.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final TutorFilter tutorFilter = new TutorFilter();
   final AuthProvider authProvider = new AuthProvider();
+  final AppProvider appProvider = new AppProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (context) => tutorFilter),
         ChangeNotifierProvider(create: (context) => authProvider),
+        ChangeNotifierProvider(create: (context) => appProvider)
       ],
       child: MaterialApp(
         title: 'Name',

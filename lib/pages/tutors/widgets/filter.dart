@@ -95,7 +95,7 @@ class Filter extends StatelessWidget {
               child: Row(children: [
             Input(
               placeholder: "Enter tutor name",
-              width: 150,
+              width: 140,
               controller: nameController!,
               onChanged: (value) {
                 if (debounce?.isActive ?? false) debounce?.cancel();
@@ -106,7 +106,7 @@ class Filter extends StatelessWidget {
             ),
             SizedBox(width: 10),
             Container(
-                width: 150,
+                width: 140,
                 child: MultiSelectDropDown<NationalityFilter>(
                   showClearIcon: true,
                   controller: nationalityController!,

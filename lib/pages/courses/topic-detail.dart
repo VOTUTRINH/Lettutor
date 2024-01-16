@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:individual_project/models/course/course.dart';
 import 'package:individual_project/pages/courses/widgets/topic_pdf.dart';
 import 'package:individual_project/widgets/appBar.dart';
 import 'package:individual_project/widgets/drawer.dart';
-import 'package:provider/provider.dart';
 
 class TopicDetailPage extends StatefulWidget {
   TopicDetailPage({Key? key, required this.course}) : super(key: key);

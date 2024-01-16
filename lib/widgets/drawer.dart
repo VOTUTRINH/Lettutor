@@ -3,6 +3,7 @@ import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/user/user-info.dart';
 import 'package:individual_project/pages/courses/courses.dart';
 import 'package:individual_project/pages/history/history.dart';
+import 'package:individual_project/pages/profile/profile.dart';
 import 'package:individual_project/pages/schedule/schedule.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
 import 'package:individual_project/widgets/avatar.dart';
@@ -20,7 +21,7 @@ class DrawerCustom extends StatelessWidget {
             onDetailsPressed: () => Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ListTutorsPage(),
+                builder: (context) => ProfilePage(),
               ),
             ),
             accountName: Text(user.name),

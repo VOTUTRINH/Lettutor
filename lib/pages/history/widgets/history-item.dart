@@ -55,7 +55,16 @@ class HistoryItem extends StatelessWidget {
     }
 
     getNumberOfDaysAgo(date) {
-      return (DateTime.now().millisecondsSinceEpoch - date) ~/ 86400000;
+      final days = (DateTime.now().millisecondsSinceEpoch - date) / 86400000;
+      if (days > 365) {
+        return "${(days / 365).floor()} year ago";
+      } else if (days > 30) {
+        return "${(days / 30).floor()} month ago";
+      } else if (days > 7) {
+        return "${(days / 7).floor()} week ago";
+      } else {
+        return "${days.floor()} day ago";
+      }
     }
 
     return Container(
@@ -81,7 +90,8 @@ class HistoryItem extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.w700)),
                         Text(
-                            "${getNumberOfDaysAgo(booking.scheduleDetailInfo!.startPeriodTimestamp)} day ago",
+                            getNumberOfDaysAgo(booking
+                                .scheduleDetailInfo!.startPeriodTimestamp),
                             style: TextStyle(fontSize: 14))
                       ],
                     )

@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:individual_project/models/feedback.dart';
-import 'package:individual_project/models/learn-topic.dart';
-import 'package:individual_project/models/test-preparation.dart';
+import 'package:individual_project/models/user/learning-topic.dart';
+import 'package:individual_project/models/user/test-preparation.dart';
 import 'package:individual_project/models/user/wallet-info.dart';
 
 class UserInfo {
@@ -63,7 +63,7 @@ class UserInfo {
   });
 
   UserInfo.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'] ?? '';
     email = json['email'] ?? '';
     name = json['name'] ?? '';
     avatar = json['avatar'] ?? '';
