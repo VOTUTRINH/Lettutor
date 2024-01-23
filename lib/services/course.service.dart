@@ -6,9 +6,23 @@ import 'dart:convert';
 
 class CourseService {
   static Future<List<Course>> getListCourseWithPagination(
-      int page, int size, String token) async {
-    final url = Uri.parse("${BaseUrl.baseUrl}course?page=$page&size=$size");
+    int page,
+    int size,
+    String token, {
+    String q = "",
+    String level = "",
+  }) async {
+    String baseUrl = "${BaseUrl.baseUrl}course?page=$page&size=$size";
 
+    if (q.isNotEmpty) {
+      baseUrl += "&q=$q";
+    }
+
+    if (level.isNotEmpty) {
+      baseUrl += "&level[]=$level";
+    }
+
+    final url = Uri.parse(baseUrl);
     final response = await http.get(
       url,
       headers: {

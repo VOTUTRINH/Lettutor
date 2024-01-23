@@ -5,10 +5,14 @@ class DropdownInput extends StatefulWidget {
   @override
   _DropdownInputState createState() => _DropdownInputState();
 
-  final List<String> options;
+  final Map<String, String> options;
   final String hintText;
+  final Function? onChangeDropdownItem;
 
-  DropdownInput({required this.options, required this.hintText});
+  DropdownInput(
+      {required this.options,
+      required this.hintText,
+      this.onChangeDropdownItem});
 }
 
 class _DropdownInputState extends State<DropdownInput> {
@@ -30,14 +34,23 @@ class _DropdownInputState extends State<DropdownInput> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: DropdownSearch<String>(
-        items: widget.options,
+        items: widget.options.values.toList(),
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
               hintText: widget.hintText,
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(16)),
         ),
-        onChanged: print,
+        onChanged: (value) {
+          setState(() {
+            for (var key in widget.options.keys) {
+              if (widget.options[key] == value) {
+                selectedLevel = key;
+                widget.onChangeDropdownItem!(selectedLevel);
+              }
+            }
+          });
+        },
       ),
     );
   }

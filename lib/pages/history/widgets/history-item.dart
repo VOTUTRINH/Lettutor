@@ -63,7 +63,7 @@ class HistoryItem extends StatelessWidget {
       } else if (days > 7) {
         return "${(days / 7).floor()} week ago";
       } else {
-        return "${days.floor()} day ago";
+        return "${days.floor() > 0 ? days.floor() : 1} day ago";
       }
     }
 

@@ -13,18 +13,37 @@ class CoursesPage extends StatefulWidget {
 }
 
 class CoursesPageState extends State<CoursesPage> {
+  TextEditingController searchController = new TextEditingController();
+  String search = "";
+  String level = "";
+  bool isLoading = true;
+
+  onFinish() {
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  onChangeDropdownItem(String? selectedLevel) {
+    setState(() {
+      level = selectedLevel ?? "";
+      isLoading = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<String> levels = [
-      "Any Level",
-      "Beginner",
-      "Upper-Beginner",
-      "Pre-Intermediate",
-      "Upper-Intermediate",
-      "Pre-advanced",
-      "Advanced",
-      "Intermediate"
-    ];
+    final listLevels = {
+      "": "All",
+      "0": "Any level",
+      "1": "Beginner",
+      "2": "High Beginner",
+      "3": "Pre-Intermediate",
+      "4": "Intermediate",
+      "5": "Upper-Intermediate",
+      "6": "Advanced",
+      "7": "Proficiency"
+    };
 
     return Scaffold(
         appBar: AppBar(title: AppBarCustom()),
@@ -63,6 +82,7 @@ class CoursesPageState extends State<CoursesPage> {
                                   children: [
                                     Expanded(
                                       child: TextField(
+                                        controller: searchController,
                                         decoration: InputDecoration(
                                           hintText: "Course",
                                           border: InputBorder.none,
@@ -70,9 +90,17 @@ class CoursesPageState extends State<CoursesPage> {
                                       ),
                                     ),
                                     SizedBox(width: 8),
-                                    Icon(
-                                      Icons.search,
-                                      color: Colors.grey,
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          search = searchController.text;
+                                          isLoading = true;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.search,
+                                        color: Colors.grey,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -87,14 +115,21 @@ class CoursesPageState extends State<CoursesPage> {
                     Wrap(
                       children: [
                         DropdownInput(
-                            options: levels, hintText: "Selected Level"),
-                        DropdownInput(
-                            options: levels, hintText: "Selected Level"),
-                        DropdownInput(
-                            options: levels, hintText: "Selected Level")
+                            options: listLevels,
+                            hintText: "Selected Level",
+                            onChangeDropdownItem: onChangeDropdownItem),
+                        // DropdownInput(
+                        //     options: listLevels, hintText: "Selected Level"),
+                        // DropdownInput(
+                        //     options: listLevels, hintText: "Selected Level")
                       ],
                     ),
-                    TabMenuCourses(outerTab: "My Outer Tab")
+                    TabMenuCourses(
+                        outerTab: "My Outer Tab",
+                        search: search,
+                        level: level,
+                        isLoading: isLoading,
+                        onFinish: onFinish)
                   ],
                 ))));
   }

@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/course/course.dart';
+import 'package:individual_project/pages/courses/widgets/course-tab.dart';
 import 'package:individual_project/pages/courses/widgets/list-course.dart';
 import 'package:individual_project/services/course.service.dart';
 import 'package:provider/provider.dart';
 
 class TabMenuCourses extends StatefulWidget {
-  final String outerTab;
-
   TabMenuCourses({
     required this.outerTab,
+    this.search,
+    this.level,
+    this.isLoading,
+    this.onFinish,
     Key? key,
   }) : super(key: key);
+
+  final String outerTab;
+  final String? search;
+  final String? level;
+  final bool? isLoading;
+  final Function? onFinish;
 
   @override
   _TabMenuCoursesState createState() => _TabMenuCoursesState();
@@ -20,21 +29,7 @@ class TabMenuCourses extends StatefulWidget {
 class _TabMenuCoursesState extends State<TabMenuCourses>
     with TickerProviderStateMixin {
   late final TabController _tabController;
-
-  List<Course> _courses = [];
   bool isLoading = true;
-  int page = 1;
-  int size = 10;
-  getCoureList(String token, int page, int size) async {
-    final courses =
-        await CourseService.getListCourseWithPagination(page, size, token);
-    if (mounted) {
-      setState(() {
-        _courses = courses;
-        isLoading = false;
-      });
-    }
-  }
 
   @override
   void initState() {
@@ -50,10 +45,6 @@ class _TabMenuCoursesState extends State<TabMenuCourses>
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    if (isLoading) {
-      getCoureList(authProvider.getAccessToken(), page, size);
-    }
     return Container(
         child: Column(
       children: [
@@ -69,17 +60,18 @@ class _TabMenuCoursesState extends State<TabMenuCourses>
           indicatorColor: Colors.blue,
         ),
         Container(
-            height: 450 * (_courses.length * 1.0 ?? 1.0) + 100,
+            height: 400 * 10.0,
             child: TabBarView(
               controller: _tabController,
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.all(16.0),
                   padding: EdgeInsets.all(8),
-                  child: ListCourse(
-                    title: "",
-                    listCourses: _courses,
-                  ),
+                  child: CourseTab(
+                      search: widget.search,
+                      level: widget.level,
+                      isLoading: widget.isLoading,
+                      onFinish: widget.onFinish),
                 ),
                 Container(
                   margin: EdgeInsets.all(16.0),

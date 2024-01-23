@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:individual_project/global.state/app-provider.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -76,7 +77,9 @@ class Filter extends StatelessWidget {
           label: 'Native English Tutor',
           value: NationalityFilter(key: 'isNative', isSelected: true)),
     ];
+
     final tutorFilter = Provider.of<TutorFilter>(context);
+    final AppProvider appProvider = Provider.of<AppProvider>(context);
 
     return Container(
       alignment: Alignment.topLeft,
@@ -142,28 +145,28 @@ class Filter extends StatelessWidget {
                 )),
           ]))
         ]),
-        Container(
-          margin: EdgeInsets.only(top: 10, bottom: 10),
-          alignment: Alignment.topLeft,
-          child: Text(
-            "Select available tutoring time:",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Row(children: [
-          Flexible(
-              child: Wrap(children: [
-            //ToDO: CALENDAR ...
-            Input(
-              placeholder: "Select a day",
-              width: 120,
-            ),
-            Input(
-              placeholder: "Select time",
-              width: 140,
-            ),
-          ]))
-        ]),
+        // Container(
+        //   margin: EdgeInsets.only(top: 10, bottom: 10),
+        //   alignment: Alignment.topLeft,
+        //   child: Text(
+        //     "Select available tutoring time:",
+        //     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        //   ),
+        // ),
+        // Row(children: [
+        //   Flexible(
+        //       child: Wrap(children: [
+        //     //ToDO: CALENDAR ...
+        //     Input(
+        //       placeholder: "Select a day",
+        //       width: 120,
+        //     ),
+        //     Input(
+        //       placeholder: "Select time",
+        //       width: 140,
+        //     ),
+        //   ]))
+        // ]),
         Container(
           alignment: Alignment.topLeft,
           child: Wrap(
