@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:individual_project/global.state/app-provider.dart';
 import 'package:individual_project/pages/tutors/widgets/tag.dart';
 import 'package:individual_project/global.state/tutor-filter.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -48,21 +47,48 @@ class Input extends StatelessWidget {
   }
 }
 
-class Filter extends StatelessWidget {
+class Filter extends StatefulWidget {
   Filter(
       {Key? key,
       this.specialties,
       this.nameController,
       this.countryController,
       this.nationalityController,
+      this.onFilterChange,
       this.debounce})
       : super(key: key);
 
   List<dynamic>? specialties;
-  final TextEditingController? nameController;
-  final TextEditingController? countryController;
-  final MultiSelectController<NationalityFilter>? nationalityController;
+  TextEditingController? nameController;
+  TextEditingController? countryController;
+  MultiSelectController<NationalityFilter>? nationalityController;
   late Timer? debounce;
+  final Function(
+      {String? name,
+      List<String>? specialties,
+      List<NationalityFilter>? nationalities})? onFilterChange;
+
+  @override
+  _FilterState createState() => _FilterState();
+}
+
+class _FilterState extends State<Filter> {
+  String? _name;
+  List<String> _specialties = [];
+  List<NationalityFilter> nationalities = [];
+
+  onSpecialtiesChange(String value) {
+    if (widget.debounce?.isActive ?? false) widget.debounce?.cancel();
+    widget.debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        _specialties = value.isNotEmpty ? [value] : [];
+        widget.onFilterChange!(
+            name: _name,
+            specialties: _specialties,
+            nationalities: nationalities);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +105,6 @@ class Filter extends StatelessWidget {
     ];
 
     final tutorFilter = Provider.of<TutorFilter>(context);
-    final AppProvider appProvider = Provider.of<AppProvider>(context);
 
     return Container(
       alignment: Alignment.topLeft,
@@ -99,11 +124,16 @@ class Filter extends StatelessWidget {
             Input(
               placeholder: "Enter tutor name",
               width: 140,
-              controller: nameController!,
+              controller: widget.nameController!,
               onChanged: (value) {
-                if (debounce?.isActive ?? false) debounce?.cancel();
-                debounce = Timer(const Duration(milliseconds: 500), () {
-                  tutorFilter.setName(value);
+                if (widget.debounce?.isActive ?? false)
+                  widget.debounce?.cancel();
+                widget.debounce = Timer(const Duration(milliseconds: 500), () {
+                  _name = value;
+                  widget.onFilterChange!(
+                      name: value,
+                      specialties: _specialties,
+                      nationalities: nationalities);
                 });
               },
             ),
@@ -112,7 +142,7 @@ class Filter extends StatelessWidget {
                 width: 140,
                 child: MultiSelectDropDown<NationalityFilter>(
                   showClearIcon: true,
-                  controller: nationalityController!,
+                  controller: widget.nationalityController!,
                   hint: 'Search tutor nationality',
                   hintStyle:
                       TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
@@ -137,40 +167,28 @@ class Filter extends StatelessWidget {
                   selectedOptionTextColor: Colors.blue,
                   searchEnabled: true,
                   onOptionRemoved: (index, option) {
-                    if (debounce?.isActive ?? false) debounce?.cancel();
-                    debounce = Timer(const Duration(milliseconds: 500), () {
+                    if (widget.debounce?.isActive ?? false)
+                      widget.debounce?.cancel();
+                    widget.debounce =
+                        Timer(const Duration(milliseconds: 500), () {
                       tutorFilter.removeNationalityFilter(option.value!.key);
                     });
                   },
                 )),
           ]))
         ]),
-        // Container(
-        //   margin: EdgeInsets.only(top: 10, bottom: 10),
-        //   alignment: Alignment.topLeft,
-        //   child: Text(
-        //     "Select available tutoring time:",
-        //     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        //   ),
-        // ),
-        // Row(children: [
-        //   Flexible(
-        //       child: Wrap(children: [
-        //     //ToDO: CALENDAR ...
-        //     Input(
-        //       placeholder: "Select a day",
-        //       width: 120,
-        //     ),
-        //     Input(
-        //       placeholder: "Select time",
-        //       width: 140,
-        //     ),
-        //   ]))
-        // ]),
+
         Container(
           alignment: Alignment.topLeft,
           child: Wrap(
-            children: specialties!.map((tag) => Tag(value: tag)).toList(),
+            children: widget.specialties!
+                .map((tag) => Tag(
+                      value: tag,
+                      selectedValue:
+                          _specialties.isNotEmpty ? _specialties[0] : "",
+                      onSelectedChange: onSpecialtiesChange,
+                    ))
+                .toList(),
           ),
         ),
       ]),

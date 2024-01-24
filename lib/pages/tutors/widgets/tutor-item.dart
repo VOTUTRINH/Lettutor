@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
+import 'package:individual_project/models/tutor/tutor-info.dart';
 import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/pages/tutors/tutor-detail.dart';
 import 'package:individual_project/widgets/avatar.dart';
@@ -11,7 +12,7 @@ import 'package:individual_project/models/feedback.dart';
 class TutorItem extends StatefulWidget {
   const TutorItem({super.key, required this.tutor, this.feedbacks});
 
-  final Tutor tutor;
+  final TutorInfo tutor;
   final List<FeedBack>? feedbacks;
 
   @override
@@ -33,10 +34,8 @@ class _TutorItemState extends State<TutorItem> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TutorDetailPage(
-                  tutorId: widget.tutor.user!.id,
-                  feedbacks: widget.feedbacks,
-                ),
+                builder: (context) =>
+                    TutorDetailPage(tutorId: widget.tutor.userId),
               ),
             );
           },
@@ -48,7 +47,7 @@ class _TutorItemState extends State<TutorItem> {
                   children: [
                     Center(
                       child: CircularImage(
-                        imageUrl: widget.tutor.user!.avatar,
+                        imageUrl: widget.tutor.avatar!,
                       ),
                     ),
                     Positioned(
@@ -60,17 +59,17 @@ class _TutorItemState extends State<TutorItem> {
                             setState(() async {
                               final isFavorite =
                                   await TutorService.addAndRemoveTutorFavorite(
-                                      widget.tutor.user!.id,
+                                      widget.tutor.userId,
                                       authProvider.getAccessToken());
-                              widget.tutor.isFavorite = isFavorite;
+                              widget.tutor.isFavoriteTutor = isFavorite;
                             });
                           });
                         },
                         child: Icon(
-                          widget.tutor.isFavorite!
+                          widget.tutor.isFavoriteTutor!
                               ? Icons.favorite
                               : Icons.favorite_border,
-                          color: widget.tutor.isFavorite!
+                          color: widget.tutor.isFavoriteTutor!
                               ? Colors.red
                               : Colors.blue,
                           size: 36.0,
@@ -85,7 +84,7 @@ class _TutorItemState extends State<TutorItem> {
                       children: [
                         Container(
                             alignment: Alignment.topLeft,
-                            child: Text(widget.tutor.user!.name ?? '',
+                            child: Text(widget.tutor.name ?? '',
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w600))),
@@ -100,7 +99,7 @@ class _TutorItemState extends State<TutorItem> {
                             //   )
 
                             SizedBox(width: 5),
-                            Text(widget.tutor.user!.country!)
+                            Text(widget.tutor.country!)
                           ],
                         ))
                       ],
@@ -141,8 +140,7 @@ class _TutorItemState extends State<TutorItem> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => TutorDetailPage(
-                            tutorId: widget.tutor.user!.id,
-                            feedbacks: widget.feedbacks,
+                            tutorId: widget.tutor.userId,
                           ),
                         ),
                       );

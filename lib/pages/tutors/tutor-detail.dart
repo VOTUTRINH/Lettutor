@@ -13,9 +13,8 @@ import 'package:individual_project/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class TutorDetailPage extends StatefulWidget {
-  const TutorDetailPage({super.key, required this.tutorId, this.feedbacks});
+  const TutorDetailPage({super.key, required this.tutorId});
   final String tutorId;
-  final List<FeedBack>? feedbacks;
   @override
   _TutorDetailPage createState() => _TutorDetailPage();
 }
@@ -60,13 +59,17 @@ class _TutorDetailPage extends State<TutorDetailPage> {
   }
 
   Tutor _tutor = Tutor();
+  List<FeedBack> _feedbacks = [];
   bool isLoading = true;
 
   findTutorById(String token, String id) async {
     Tutor tutor = await TutorService.getTutorById(token, id);
+    List<FeedBack> feedbacks =
+        await TutorService.getFeedBacksByTutor(id, token, 1, 10);
     if (mounted) {
       setState(() {
         _tutor = tutor;
+        _feedbacks = feedbacks;
         isLoading = false;
       });
     }
@@ -203,9 +206,9 @@ class _TutorDetailPage extends State<TutorDetailPage> {
                           child: title("Other review"),
                         ),
 
-                        ...(widget.feedbacks!.length > 10
-                                ? widget.feedbacks!.getRange(0, 10).toList()
-                                : widget.feedbacks!)
+                        ...(_feedbacks!.length > 10
+                                ? _feedbacks!.getRange(0, 10).toList()
+                                : _feedbacks!)
                             .map((e) => FeedBackUI(feedback: e))
                             .toList(),
                         Container(

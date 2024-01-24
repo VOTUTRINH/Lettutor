@@ -14,7 +14,7 @@ class FeedBackUI extends StatelessWidget {
         padding: EdgeInsets.only(top: 16, left: 16),
         child: Row(
           children: [
-            CircularImage(imageUrl: feedback!.firstInfo.avatar, size: 32),
+            CircularImage(imageUrl: feedback!.firstInfo.avatar!, size: 32),
             SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

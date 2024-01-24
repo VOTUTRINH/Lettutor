@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:individual_project/global.state/tutor-filter.dart';
+import 'package:individual_project/models/feedback.dart';
 import 'package:individual_project/models/tutor/tutor-info.dart';
 import 'package:individual_project/models/tutor/tutor.dart';
 import 'package:individual_project/services/base_url.dart';
@@ -115,6 +116,26 @@ class TutorService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  static Future<List<FeedBack>> getFeedBacksByTutor(
+      String tutorId, String token, int page, int perPage) async {
+    final url = Uri.parse(
+        '${BaseUrl.baseUrl}feedback/v2/${tutorId}?page=$page&perPage=$perPage');
+
+    final response = await http.get(url, headers: {
+      "Authorization": "Bearer $token",
+      "Content-type": "application/json;encoding=utf-8",
+    });
+
+    if (response.statusCode == 200) {
+      final jsonRes = json.decode(response.body);
+      final List<dynamic> feedbacks = jsonRes['data']["rows"];
+      return feedbacks.map((feedback) => FeedBack.fromJson(feedback)).toList();
+    } else {
+      final jsonRes = json.decode(response.body);
+      throw Exception(jsonRes["message"]);
     }
   }
 }

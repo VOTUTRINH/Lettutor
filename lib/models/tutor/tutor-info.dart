@@ -39,6 +39,8 @@ class TutorInfo {
   bool? isNative;
   late int price;
   bool? isOnline;
+  bool? isFavoriteTutor;
+  double? rating;
 
   TutorInfo({
     required this.level,
@@ -79,6 +81,8 @@ class TutorInfo {
     this.isNative,
     required this.price,
     this.isOnline,
+    this.isFavoriteTutor,
+    this.rating,
   });
 
   TutorInfo.fromJson(Map<String, dynamic> json) {
@@ -127,6 +131,8 @@ class TutorInfo {
     isNative = json['isNative'] ?? false;
     price = json['price'] ?? 0;
     isOnline = json['isOnline'] ?? false;
+    isFavoriteTutor = json['isFavoriteTutor'] ?? false;
+    rating = json['rating'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -169,6 +175,8 @@ class TutorInfo {
     data['isNative'] = isNative;
     data['price'] = price;
     data['isOnline'] = isOnline;
+    data['isFavoriteTutor'] = isFavoriteTutor;
+    data['rating'] = rating;
     return data;
   }
 }

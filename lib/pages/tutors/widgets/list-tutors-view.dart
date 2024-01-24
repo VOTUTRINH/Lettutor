@@ -5,6 +5,7 @@ import 'package:individual_project/global.state/app-provider.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/tutor/tutor-info.dart';
 import 'package:individual_project/models/tutor/tutor.dart';
+import 'package:individual_project/models/user/learning-topic.dart';
 import 'package:individual_project/pages/tutors/widgets/filter.dart';
 import 'package:individual_project/pages/tutors/widgets/tutor-item.dart';
 import 'package:individual_project/global.state/tutor-filter.dart';
@@ -24,13 +25,16 @@ class ListTutorsView extends StatefulWidget {
 }
 
 class _ListTutorsState extends State<ListTutorsView> {
-  List<Tutor> _tutors = [];
   List<TutorInfo> _tutorInfos = [];
   List<dynamic> _specialties = [];
   bool isLoading = true;
   late TextEditingController nameController;
   late TextEditingController countryController;
   late MultiSelectController<NationalityFilter> _controller;
+
+  String? nameFilter = "";
+  List<String>? specialtiesFilter = [];
+  List<NationalityFilter>? nationalitiesFilter = [];
 
   Timer? _debounce;
 
@@ -45,22 +49,51 @@ class _ListTutorsState extends State<ListTutorsView> {
     });
 
     try {
-      List<TutorInfo> tutorInfos = await getTutorInfos();
-      List<Tutor> tutors = [];
-      for (int i = 0; i < tutorInfos.length; i++) {
-        final tutor =
-            await TutorService.getTutorById(token!, tutorInfos[i].userId);
-        tutors.add(tutor);
-      }
+      List<TutorInfo> tutorInfos = await TutorService.searchTutor(
+        page,
+        perPage,
+        token!,
+        nameFilter ?? "",
+        specialtiesFilter ?? [],
+        nationalitiesFilter ?? [],
+      );
       if (mounted) {
         setState(() {
-          _tutors.addAll(tutors);
           _tutorInfos.addAll(tutorInfos);
           widget.onLoadMoreChange!();
         });
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  onFilterChange(
+      {String? name,
+      List<String>? specialties,
+      List<NationalityFilter>? nationalities}) async {
+    setState(() {
+      page = 1;
+      _tutorInfos = [];
+      nameFilter = name;
+      specialtiesFilter = specialties;
+      nationalitiesFilter = nationalities;
+    });
+
+    List<TutorInfo> tutorInfos = await TutorService.searchTutor(
+      page,
+      perPage,
+      token!,
+      nameFilter ?? "",
+      specialtiesFilter ?? [],
+      nationalitiesFilter ?? [],
+    );
+
+    if (mounted) {
+      setState(() {
+        _tutorInfos = tutorInfos;
+        isLoading = false;
+      });
     }
   }
 
@@ -79,43 +112,23 @@ class _ListTutorsState extends State<ListTutorsView> {
     final allTestPreparation = await UserService.getAllTestPreparation(token!);
     appProvider.load(allTopics, allTestPreparation);
 
-    List<TutorInfo> tutorInfos = await getTutorInfos();
-    List<Tutor> tutors = [];
-    for (int i = 0; i < tutorInfos.length; i++) {
-      final tutor =
-          await TutorService.getTutorById(token!, tutorInfos[i].userId);
-      tutors.add(tutor);
-    }
+    List<TutorInfo> tutorInfos = await TutorService.searchTutor(
+      page,
+      perPage,
+      token!,
+      nameFilter ?? "",
+      specialtiesFilter ?? [],
+      nationalitiesFilter ?? [],
+    );
 
     if (mounted) {
       setState(() {
-        _tutors = tutors;
         _specialties = specialties;
         _tutorInfos = tutorInfos;
         isLoading = false;
+        tutorFilter.setSearching(false);
       });
-
-      tutorFilter.setSearching(false);
     }
-  }
-
-  getTutorInfos() async {
-    List<TutorInfo> tutorInfos = [];
-
-    if (tutorFilter.isFilterTutor()) {
-      tutorFilter.setSearching(true);
-      tutorInfos = await TutorService.searchTutor(
-        page,
-        perPage,
-        token!,
-        tutorFilter.getName(),
-        [],
-        tutorFilter.selectedNationality.toList() ?? [],
-      );
-    } else {
-      tutorInfos = await TutorService.getTutors(token!, perPage, page);
-    }
-    return tutorInfos;
   }
 
   @override
@@ -125,8 +138,12 @@ class _ListTutorsState extends State<ListTutorsView> {
     setState(() {
       token = authProvider.getAccessToken();
       tutorFilter = Provider.of<TutorFilter>(context);
+      _specialties = [];
+      _specialties.add(LearnTopic(id: 1, key: "", name: "All"));
+      _specialties.addAll(appProvider.allLearningTopics);
+      _specialties.addAll(appProvider.allTestPreparations);
     });
-    if (isLoading || tutorFilter.isFilterTutor()) {
+    if (isLoading) {
       getTutorList(authProvider, appProvider);
     }
     if (widget.isLoadMore) {
@@ -143,6 +160,7 @@ class _ListTutorsState extends State<ListTutorsView> {
                   countryController: countryController,
                   nationalityController: _controller,
                   debounce: _debounce,
+                  onFilterChange: onFilterChange,
                 ),
                 Container(
                     margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
@@ -156,23 +174,21 @@ class _ListTutorsState extends State<ListTutorsView> {
                 // List of tutors sorted by favorite and rating
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: _tutors.isEmpty
+                  child: _tutorInfos.isEmpty
                       ? const FreeContentWidget('No available tutors')
                       : ListView.builder(
                           shrinkWrap: true,
-                          itemCount: _tutors.length,
+                          itemCount: _tutorInfos.length,
                           itemBuilder: (context, index) {
                             // Sort the tutorList by favorite and rating
-                            _tutors.sort((a, b) {
-                              if (a.isFavorite != b.isFavorite) {
-                                return a.isFavorite! ? -1 : 1;
+                            _tutorInfos.sort((a, b) {
+                              if (a.isFavoriteTutor != b.isFavoriteTutor) {
+                                return a.isFavoriteTutor! ? -1 : 1;
                               } else {
-                                return b.avgRating!.compareTo(a.avgRating ?? 0);
+                                return (b.rating ?? 0).compareTo(a.rating ?? 0);
                               }
                             });
-                            return TutorItem(
-                                tutor: _tutors[index],
-                                feedbacks: _tutorInfos[index].feedbacks);
+                            return TutorItem(tutor: _tutorInfos[index]);
                           }),
                 )
               ],

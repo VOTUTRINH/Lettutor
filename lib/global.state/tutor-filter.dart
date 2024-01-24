@@ -17,7 +17,7 @@ class NationalityFilter {
 }
 
 class TutorFilter extends ChangeNotifier {
-  late String specialties = "all";
+  late String specialties = "";
   late String name = "";
   late String country = "";
   late bool isSearching = false;
@@ -80,7 +80,7 @@ class TutorFilter extends ChangeNotifier {
   }
 
   getspecialties() {
-    return this.specialties;
+    return specialties;
   }
 
   setName(String name) {
@@ -90,7 +90,7 @@ class TutorFilter extends ChangeNotifier {
   }
 
   getName() {
-    return this.name;
+    return name;
   }
 
   setCountry(String country) {
@@ -99,7 +99,7 @@ class TutorFilter extends ChangeNotifier {
   }
 
   getCountry() {
-    return this.country;
+    return country;
   }
 
   isFilterTutor() {
