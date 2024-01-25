@@ -6,6 +6,7 @@ class AbstractInputWidget extends StatelessWidget {
   final double textPadding;
   final TextEditingController controller;
   final ValueChanged<String>? onChanged;
+  final isPassword;
 
   AbstractInputWidget({
     required this.title,
@@ -13,6 +14,7 @@ class AbstractInputWidget extends StatelessWidget {
     this.textPadding = 8.0,
     required this.controller,
     this.onChanged,
+    this.isPassword = false,
   });
 
   @override
@@ -30,6 +32,7 @@ class AbstractInputWidget extends StatelessWidget {
           ),
         ),
         TextField(
+          obscureText: isPassword,
           controller: controller,
           onChanged: onChanged,
           decoration: InputDecoration(
@@ -51,11 +54,13 @@ class CustomTextInputWidget extends AbstractInputWidget {
     double textPadding = 8.0,
     required TextEditingController controller,
     ValueChanged<String>? onChanged,
+    bool isPassword = false,
   }) : super(
           title: title,
           placeholder: placeholder,
           textPadding: textPadding,
           controller: controller,
           onChanged: onChanged,
+          isPassword: isPassword,
         );
 }

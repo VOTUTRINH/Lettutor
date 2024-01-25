@@ -41,7 +41,6 @@ class _ListTutorsState extends State<ListTutorsView> {
   int page = 1;
   int perPage = 10;
   String? token;
-  late TutorFilter tutorFilter;
 
   void loadMore() async {
     setState(() {
@@ -126,7 +125,6 @@ class _ListTutorsState extends State<ListTutorsView> {
         _specialties = specialties;
         _tutorInfos = tutorInfos;
         isLoading = false;
-        tutorFilter.setSearching(false);
       });
     }
   }
@@ -137,7 +135,6 @@ class _ListTutorsState extends State<ListTutorsView> {
     final appProvider = Provider.of<AppProvider>(context);
     setState(() {
       token = authProvider.getAccessToken();
-      tutorFilter = Provider.of<TutorFilter>(context);
       _specialties = [];
       _specialties.add(LearnTopic(id: 1, key: "", name: "All"));
       _specialties.addAll(appProvider.allLearningTopics);

@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/app-provider.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/pages/login/login.dart';
-import 'package:individual_project/pages/tutors/list-tutors.dart';
-import 'package:individual_project/services/respository/account-repository.dart';
-import 'package:individual_project/services/respository/booking-repository.dart';
-import 'package:individual_project/services/respository/feedback-repository.dart';
-import 'package:individual_project/global.state/tutor-filter.dart';
-import 'package:individual_project/services/respository/tutor-repositiory.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -20,7 +14,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final TutorFilter tutorFilter = new TutorFilter();
   final AuthProvider authProvider = new AuthProvider();
   final AppProvider appProvider = new AppProvider();
 
@@ -28,7 +21,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => tutorFilter),
         ChangeNotifierProvider(create: (context) => authProvider),
         ChangeNotifierProvider(create: (context) => appProvider)
       ],

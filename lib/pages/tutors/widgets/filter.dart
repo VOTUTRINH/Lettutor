@@ -77,6 +77,52 @@ class _FilterState extends State<Filter> {
   List<String> _specialties = [];
   List<NationalityFilter> nationalities = [];
 
+  var nonSelectedNationality = [
+    NationalityFilter(key: NationalityKey.isForeign, isSelected: false),
+    NationalityFilter(key: NationalityKey.isVietnamese, isSelected: false),
+    NationalityFilter(key: NationalityKey.isNative, isSelected: false)
+  ];
+
+  addNationalityFilter(List<NationalityFilter?> nationalityFilters) {
+    setState(() {
+      if (nationalityFilters.isEmpty) {
+        nationalities = [];
+        return;
+      }
+      nationalities.clear();
+
+      if (isIncludedNationality(nationalityFilters, NationalityKey.isForeign)) {
+        nationalities.addAll(nonSelectedNationality);
+        nationalities.removeWhere((element) =>
+            isIncludedNationality(nationalityFilters, element?.key) == true);
+      } else {
+        nationalities.addAll(nationalityFilters as Iterable<NationalityFilter>);
+        nationalities.map((e) => e?.isSelected = true).toList();
+        nationalities
+            .sort((a, b) => a?.key == NationalityKey.isVietnamese ? -1 : 1);
+      }
+
+      widget.onFilterChange!(
+          name: _name, specialties: _specialties, nationalities: nationalities);
+    });
+  }
+
+  removeNationalityFilter(String key) {
+    nationalities.removeWhere((element) => element?.key == key);
+    List<NationalityFilter?> nationalityFilters = [];
+    nationalityFilters.addAll(nationalities);
+    addNationalityFilter(nationalityFilters);
+  }
+
+  bool isIncludedNationality(
+      List<NationalityFilter?> nationalityFilters, String? key) {
+    if (nationalityFilters.isEmpty) {
+      return false;
+    }
+
+    return nationalityFilters.any((element) => element?.key == key);
+  }
+
   onSpecialtiesChange(String value) {
     if (widget.debounce?.isActive ?? false) widget.debounce?.cancel();
     widget.debounce = Timer(const Duration(milliseconds: 500), () {
@@ -103,8 +149,6 @@ class _FilterState extends State<Filter> {
           label: 'Native English Tutor',
           value: NationalityFilter(key: 'isNative', isSelected: true)),
     ];
-
-    final tutorFilter = Provider.of<TutorFilter>(context);
 
     return Container(
       alignment: Alignment.topLeft,
@@ -148,8 +192,7 @@ class _FilterState extends State<Filter> {
                       TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
                   dropdownHeight: 150,
                   onOptionSelected: (options) {
-                    tutorFilter.addNationalityFilter(
-                        options.map((e) => e.value).toList());
+                    addNationalityFilter(options.map((e) => e.value).toList());
                   },
                   options: listNationalityOptions,
                   selectionType: SelectionType.multi,
@@ -171,7 +214,7 @@ class _FilterState extends State<Filter> {
                       widget.debounce?.cancel();
                     widget.debounce =
                         Timer(const Duration(milliseconds: 500), () {
-                      tutorFilter.removeNationalityFilter(option.value!.key);
+                      removeNationalityFilter(option.value!.key);
                     });
                   },
                 )),

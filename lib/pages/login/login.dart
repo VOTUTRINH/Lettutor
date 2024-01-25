@@ -72,6 +72,7 @@ class _LoginPage extends State<LoginPage> {
                                 placeholder: '',
                                 controller: passwordController,
                                 onChanged: (value) {},
+                                isPassword: true,
                               )),
                           if (widget.isLogin)
                             Container(
@@ -118,6 +119,20 @@ class _LoginPage extends State<LoginPage> {
                                           User(emailController.text,
                                               passwordController.text),
                                           authProvider);
+
+                                      if (response != {} &&
+                                          response['isSuccess'] == true) {
+                                        showSnackBar(
+                                            response['message'].toString());
+                                        // ignore: use_build_context_synchronously
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => LoginPage(),
+                                          ),
+                                        );
+                                        return;
+                                      }
                                     }
 
                                     if (response != {} &&
