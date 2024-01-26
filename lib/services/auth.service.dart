@@ -113,4 +113,18 @@ class AuthService {
       };
     }
   }
+
+  static Future<bool> forgotPassword(String email) async {
+    final response = await http
+        .post(Uri.parse("${BaseUrl.baseUrl}user/forgotPassword"), body: {
+      'email': email,
+    });
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      final jsonRes = json.decode(response.body);
+      throw Exception(jsonRes["message"]);
+    }
+  }
 }

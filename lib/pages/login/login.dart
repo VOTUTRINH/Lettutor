@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/user/user.dart';
 import 'package:individual_project/pages/login/widgets/banner.dart';
+import 'package:individual_project/pages/login/widgets/forgot_password.dart';
 import 'package:individual_project/pages/login/widgets/login_with.dart';
 import 'package:individual_project/pages/login/widgets/textField.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
@@ -81,7 +82,15 @@ class _LoginPage extends State<LoginPage> {
                                     child: Container(
                                         margin: EdgeInsets.only(bottom: 14),
                                         child: InkWell(
-                                            onTap: () {},
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ForgotPasswordPage(),
+                                                ),
+                                              );
+                                            },
                                             child: Text(
                                               "Forgot Password? ",
                                               style: TextStyle(
