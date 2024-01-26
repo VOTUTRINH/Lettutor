@@ -65,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         _nameController.text = authProvider.userLoggedIn.name;
         _email = authProvider.userLoggedIn.email;
-        _birthday = authProvider.userLoggedIn.birthday != null
+        _birthday = authProvider.userLoggedIn.birthday != ""
             ? DateFormat("yyyy-MM-dd")
                 .parse(authProvider.userLoggedIn.birthday as String)
             : DateFormat("yyyy-MM-dd").parse("1999-01-22");
@@ -221,7 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       DropdownEdit(
                         title: 'Level',
                         selectedItem:
-                            _level != null ? _level as String : "BEGINNER",
+                            _level != "" ? _level as String : "BEGINNER",
                         items: listLevel,
                         onChange: setForm,
                         fieldName: "Level",

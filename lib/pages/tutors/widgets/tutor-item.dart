@@ -10,12 +10,10 @@ import 'package:provider/provider.dart';
 import 'package:individual_project/models/feedback.dart';
 
 class TutorItem extends StatefulWidget {
-  const TutorItem(
-      {super.key, required this.tutor, this.feedbacks, this.onFavoriteChange});
+  const TutorItem({super.key, required this.tutor, this.feedbacks});
 
   final TutorInfo tutor;
   final List<FeedBack>? feedbacks;
-  final Function? onFavoriteChange;
 
   @override
   _TutorItemState createState() => _TutorItemState();
