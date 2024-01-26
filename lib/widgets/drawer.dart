@@ -3,6 +3,7 @@ import 'package:individual_project/global.state/auth-provider.dart';
 import 'package:individual_project/models/user/user-info.dart';
 import 'package:individual_project/pages/courses/courses.dart';
 import 'package:individual_project/pages/history/history.dart';
+import 'package:individual_project/pages/login/login.dart';
 import 'package:individual_project/pages/profile/profile.dart';
 import 'package:individual_project/pages/schedule/schedule.dart';
 import 'package:individual_project/pages/tutors/list-tutors.dart';
@@ -53,12 +54,19 @@ class DrawerCustom extends StatelessWidget {
             },
             // {"text": "My Course", "Icon": Icons.book_sharp,  "navigate": ListTutorsPage()},
             // {"text": "Become a tutor", "Icon": Icons.person},
-            {"text": "Logout", "Icon": Icons.logout_sharp},
+            {
+              "text": "Logout",
+              "Icon": Icons.logout_sharp,
+              'navigate': LoginPage()
+            },
           ]
               .map((item) => ListTile(
                     leading: Icon(item['Icon'] as IconData, color: Colors.blue),
                     title: Text(item['text'] as String),
                     onTap: () {
+                      if (item['text'] == 'Logout') {
+                        authProvider.tokens = null;
+                      }
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
