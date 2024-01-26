@@ -10,10 +10,12 @@ import 'package:provider/provider.dart';
 import 'package:individual_project/models/feedback.dart';
 
 class TutorItem extends StatefulWidget {
-  const TutorItem({super.key, required this.tutor, this.feedbacks});
+  const TutorItem(
+      {super.key, required this.tutor, this.feedbacks, this.onFavoriteChange});
 
   final TutorInfo tutor;
   final List<FeedBack>? feedbacks;
+  final Function? onFavoriteChange;
 
   @override
   _TutorItemState createState() => _TutorItemState();
@@ -61,7 +63,9 @@ class _TutorItemState extends State<TutorItem> {
                                   await TutorService.addAndRemoveTutorFavorite(
                                       widget.tutor.userId,
                                       authProvider.getAccessToken());
-                              widget.tutor.isFavoriteTutor = isFavorite;
+                              setState(() {
+                                widget.tutor.isFavoriteTutor = isFavorite;
+                              });
                             });
                           });
                         },

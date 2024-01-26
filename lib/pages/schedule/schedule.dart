@@ -69,6 +69,13 @@ class _SchedulePageState extends State<SchedulePage> {
     }
   }
 
+  onScheduleChange() {
+    setState(() {
+      isLoading = true;
+      page = 1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -157,6 +164,7 @@ class _SchedulePageState extends State<SchedulePage> {
                           margin: const EdgeInsets.symmetric(horizontal: 15),
                           child: ScheduleItem(
                             booking: _bookingInfos[index],
+                            onScheduleChange: onScheduleChange,
                           ),
                         );
                       },

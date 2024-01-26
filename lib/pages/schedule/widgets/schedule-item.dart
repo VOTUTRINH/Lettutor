@@ -9,10 +9,17 @@ import 'dart:convert';
 import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 
-class ScheduleItem extends StatelessWidget {
-  ScheduleItem({Key? key, required this.booking}) : super(key: key);
+class ScheduleItem extends StatefulWidget {
+  ScheduleItem({Key? key, required this.booking, this.onScheduleChange})
+      : super(key: key);
   final BookingInfo booking;
+  final Function? onScheduleChange;
 
+  @override
+  _ScheduleItemState createState() => _ScheduleItemState();
+}
+
+class _ScheduleItemState extends State<ScheduleItem> {
   formatdate(date) {
     return DateFormat.yMEd().format(DateTime.fromMillisecondsSinceEpoch(date));
   }
@@ -35,7 +42,7 @@ class ScheduleItem extends StatelessWidget {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
     final base64Decoded = base64.decode(base64.normalize(
-        booking.studentMeetingLink.split("token=")[1].split(".")[1]));
+        widget.booking.studentMeetingLink!.split("token=")[1].split(".")[1]));
     final urlObject = utf8.decode(base64Decoded);
     final jsonRes = json.decode(urlObject);
     final String roomId = jsonRes['room'];
@@ -55,14 +62,16 @@ class ScheduleItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        formatdate(
-                            booking.scheduleDetailInfo?.startPeriodTimestamp),
+                        formatdate(widget
+                            .booking.scheduleDetailInfo?.startPeriodTimestamp),
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w700)),
                     Text("1 lesson", style: TextStyle(fontSize: 14))
                   ],
                 )),
-            Info(tutor: booking.scheduleDetailInfo!.scheduleInfo!.tutorInfo!),
+            Info(
+                tutor: widget
+                    .booking.scheduleDetailInfo!.scheduleInfo!.tutorInfo!),
             Container(
               padding: EdgeInsets.fromLTRB(20, 12, 20, 20),
               decoration: BoxDecoration(color: Colors.white),
@@ -72,11 +81,11 @@ class ScheduleItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                          formatTime(booking
-                                  .scheduleDetailInfo?.startPeriodTimestamp) +
+                          formatTime(widget.booking.scheduleDetailInfo
+                                  ?.startPeriodTimestamp) +
                               '-' +
-                              formatTime(booking
-                                  .scheduleDetailInfo?.endPeriodTimestamp),
+                              formatTime(widget.booking.scheduleDetailInfo
+                                  ?.endPeriodTimestamp),
                           style: TextStyle(fontSize: 18)),
                       Spacer(),
                       Container(
@@ -85,19 +94,24 @@ class ScheduleItem extends StatelessWidget {
                               Colors.red, onPressed: () async {
                             final now = DateTime.now();
                             final start = DateTime.fromMillisecondsSinceEpoch(
-                                booking
-                                    .scheduleDetailInfo!.startPeriodTimestamp);
+                                widget.booking.scheduleDetailInfo!
+                                    .startPeriodTimestamp);
                             if (start.isAfter(now) &&
                                 now.difference(start).inHours.abs() >= 2) {
                               final res =
                                   await ScheduleService.cancelABookedClass(
-                                      booking.id,
+                                      widget.booking.id!,
                                       authProvider.getAccessToken());
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content:
                                           Text(res['message'].toString())));
+                              widget.onScheduleChange!();
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      "You can only cancel a class 2 hours before the class starts.")));
                             }
                           }))
                     ],
@@ -125,7 +139,7 @@ class ScheduleItem extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
                           alignment: Alignment.topLeft,
-                          child: Text(booking.studentRequest ??
+                          child: Text(widget.booking.studentRequest ??
                               'Currently there are no requests for this class. Please write down any requests for the teacher.'),
                         )
                       ]))
@@ -135,10 +149,10 @@ class ScheduleItem extends StatelessWidget {
             Container(
                 alignment: Alignment.topRight,
                 padding: EdgeInsets.fromLTRB(15, 4, 0, 4),
-                child: isActiveGoToMeeting(booking)
+                child: isActiveGoToMeeting(widget.booking)
                     ? button("Go to meeting", Colors.grey[100], Colors.blue,
                         Colors.blue, onPressed: () async {
-                        if (isActiveGoToMeeting(booking)) {
+                        if (isActiveGoToMeeting(widget.booking)) {
                           var jitsiMeet = JitsiMeet();
                           final options = JitsiMeetConferenceOptions(
                               room: roomId,

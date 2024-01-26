@@ -2,63 +2,66 @@ import 'package:flutter/material.dart';
 import 'package:individual_project/models/schedule/schedule_detail.dart';
 
 class BookingInfo {
-  late int createdAtTimeStamp;
-  late int updatedAtTimeStamp;
-  late String id;
-  late String userId;
-  late String scheduleDetailId;
-  late String tutorMeetingLink;
-  late String studentMeetingLink;
+  int? createdAtTimeStamp;
+  int? updatedAtTimeStamp;
+  String? id;
+  String? userId;
+  String? scheduleDetailId;
+  String? tutorMeetingLink;
+  String? studentMeetingLink;
   String? googleMeetingLink;
   String? studentRequest;
   String? tutorReview;
   int? scoreByTutor;
-  late String createdAt;
-  late String updatedAt;
+  String? createdAt;
+  String? updatedAt;
   String? recordUrl;
   String? cancelNote;
-  late bool isDeleted;
-  late bool isTrial;
+  bool? isDeleted;
+  bool? isTrial;
   int? convertedLesson;
+  int? cancelReasonId;
   // bool showRecordUrl = true;
   // List<String> studentMaterials = [];
   ScheduleDetails? scheduleDetailInfo;
 
-  BookingInfo({
-    required this.createdAtTimeStamp,
-    required this.updatedAtTimeStamp,
-    required this.id,
-    required this.userId,
-    required this.scheduleDetailId,
-    required this.tutorMeetingLink,
-    required this.studentMeetingLink,
-    this.studentRequest,
-    this.tutorReview,
-    this.scoreByTutor,
-    required this.createdAt,
-    required this.updatedAt,
-    this.recordUrl,
-    required this.isDeleted,
-    // required this.showRecordUrl,
-    // required this.studentMaterials,
-    // this.scheduleDetailInfo,
-  });
+  BookingInfo(
+      {this.createdAtTimeStamp,
+      this.updatedAtTimeStamp,
+      this.id,
+      this.userId,
+      this.scheduleDetailId,
+      this.tutorMeetingLink,
+      this.studentMeetingLink,
+      this.studentRequest,
+      this.tutorReview,
+      this.scoreByTutor,
+      this.createdAt,
+      this.updatedAt,
+      this.recordUrl,
+      this.isDeleted,
+      this.cancelReasonId
+      // required this.showRecordUrl,
+      // required this.studentMaterials,
+      // this.scheduleDetailInfo,
+      });
 
   BookingInfo.fromJson(Map<String, dynamic> json) {
-    createdAtTimeStamp = json['createdAtTimeStamp'];
-    updatedAtTimeStamp = json['updatedAtTimeStamp'];
-    id = json['id'];
-    userId = json['userId'];
-    scheduleDetailId = json['scheduleDetailId'];
-    tutorMeetingLink = json['tutorMeetingLink'];
-    studentMeetingLink = json['studentMeetingLink'];
-    studentRequest = json['studentRequest'];
-    tutorReview = json['tutorReview'];
-    scoreByTutor = json['scoreByTutor'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    recordUrl = json['recordUrl'];
-    isDeleted = json['isDeleted'];
+    createdAtTimeStamp = json['createdAtTimeStamp'] ?? 0;
+    updatedAtTimeStamp = json['updatedAtTimeStamp'] ?? 0;
+    id = json['id'] ?? "";
+    userId = json['userId'] ?? "";
+    scheduleDetailId = json['scheduleDetailId'] ?? "";
+    tutorMeetingLink = json['tutorMeetingLink'] ?? "";
+    studentMeetingLink = json['studentMeetingLink'] ?? "";
+    studentRequest = json['studentRequest'] ?? "";
+    tutorReview = json['tutorReview'] ?? "";
+    scoreByTutor = json['scoreByTutor'] ?? 0;
+    createdAt = json['createdAt'] ?? "";
+    updatedAt = json['updatedAt'] ?? "";
+    recordUrl = json['recordUrl'] ?? "";
+    isDeleted = json['isDeleted'] ?? false;
+    cancelReasonId = json['cancelReasonId'];
     // showRecordUrl = json["showRecordUrl"] ?? true;
     // studentMaterials = json["studentMaterials"] != null
     //     ? json["studentMaterials"].cast<String>()
@@ -67,10 +70,10 @@ class BookingInfo {
         ? ScheduleDetails.fromJson(json["scheduleDetailInfo"])
         : null;
 
-    googleMeetingLink = json['googleMeetingLink'];
-    cancelNote = json['cancelNote'];
+    googleMeetingLink = json['googleMeetingLink'] ?? "";
+    cancelNote = json['cancelNote'] ?? "";
     isTrial = json['isTrial'] ?? false;
-    convertedLesson = json['convertedLesson'];
+    convertedLesson = json['convertedLesson'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -97,6 +100,7 @@ class BookingInfo {
     data['cancelNote'] = cancelNote;
     data['isTrial'] = isTrial;
     data['convertedLesson'] = convertedLesson;
+    data['cancelReasonId'] = cancelReasonId;
     return data;
   }
 }

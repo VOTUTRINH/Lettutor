@@ -129,6 +129,13 @@ class _ListTutorsState extends State<ListTutorsView> {
     }
   }
 
+  onFavoriteChange() {
+    setState(() {
+      isLoading = true;
+      page = 1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -185,7 +192,9 @@ class _ListTutorsState extends State<ListTutorsView> {
                                 return (b.rating ?? 0).compareTo(a.rating ?? 0);
                               }
                             });
-                            return TutorItem(tutor: _tutorInfos[index]);
+                            return TutorItem(
+                                tutor: _tutorInfos[index],
+                                onFavoriteChange: onFavoriteChange);
                           }),
                 )
               ],

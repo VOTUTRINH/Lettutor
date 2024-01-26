@@ -7,19 +7,18 @@ import 'package:http/http.dart' as http;
 class ScheduleService {
   static Future<List<Schedule>> getScheduleByTutorId(
       String token, String tutorId) async {
-    final url = Uri.parse(BaseUrl.baseUrl + 'schedule');
+    final url = Uri.parse('${BaseUrl.baseUrl}schedule?tutorId=$tutorId&page=0');
 
-    final response = await http.post(url, headers: {
+    final response = await http.get(url, headers: {
       "Authorization": "Bearer $token",
-    }, body: {
-      "tutorId": tutorId,
+      "Content-type": "application/json;encoding=utf-8",
     });
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       final List<Schedule> schedules = [];
 
-      schedules.addAll(responseData['data']
+      schedules.addAll(responseData['scheduleOfTutor']
           .map<Schedule>((item) => Schedule.fromJson(item))
           .toList());
 

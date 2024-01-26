@@ -84,27 +84,25 @@ class _FilterState extends State<Filter> {
   ];
 
   addNationalityFilter(List<NationalityFilter?> nationalityFilters) {
-    setState(() {
-      if (nationalityFilters.isEmpty) {
-        nationalities = [];
-        return;
-      }
-      nationalities.clear();
+    if (nationalityFilters.isEmpty) {
+      nationalities = [];
+      return;
+    }
+    nationalities.clear();
 
-      if (isIncludedNationality(nationalityFilters, NationalityKey.isForeign)) {
-        nationalities.addAll(nonSelectedNationality);
-        nationalities.removeWhere((element) =>
-            isIncludedNationality(nationalityFilters, element?.key) == true);
-      } else {
-        nationalities.addAll(nationalityFilters as Iterable<NationalityFilter>);
-        nationalities.map((e) => e?.isSelected = true).toList();
-        nationalities
-            .sort((a, b) => a?.key == NationalityKey.isVietnamese ? -1 : 1);
-      }
+    if (isIncludedNationality(nationalityFilters, NationalityKey.isForeign)) {
+      nationalities.addAll(nonSelectedNationality);
+      nationalities.removeWhere((element) =>
+          isIncludedNationality(nationalityFilters, element?.key) == true);
+    } else {
+      nationalities.addAll(nationalityFilters as Iterable<NationalityFilter>);
+      nationalities.map((e) => e?.isSelected = true).toList();
+      nationalities
+          .sort((a, b) => a?.key == NationalityKey.isVietnamese ? -1 : 1);
+    }
 
-      widget.onFilterChange!(
-          name: _name, specialties: _specialties, nationalities: nationalities);
-    });
+    widget.onFilterChange!(
+        name: _name, specialties: _specialties, nationalities: nationalities);
   }
 
   removeNationalityFilter(String key) {

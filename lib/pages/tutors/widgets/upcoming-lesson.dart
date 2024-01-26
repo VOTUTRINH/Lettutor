@@ -101,14 +101,14 @@ class _UpcomingLessonState extends State<UpcomingLesson> {
                             onPressed: () async {
                               if (nextLesson != null) {
                                 final base64Decoded = base64.decode(base64
-                                    .normalize(nextLesson!.studentMeetingLink
+                                    .normalize(nextLesson!.studentMeetingLink!
                                         .split("token=")[1]
                                         .split(".")[1]));
                                 final urlObject = utf8.decode(base64Decoded);
                                 final jsonRes = json.decode(urlObject);
                                 final String roomId = jsonRes['room'];
                                 final String tokenMeeting = nextLesson!
-                                    .studentMeetingLink
+                                    .studentMeetingLink!
                                     .split("token=")[1];
                                 var jitsiMeet = JitsiMeet();
                                 final options = JitsiMeetConferenceOptions(
