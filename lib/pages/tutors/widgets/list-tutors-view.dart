@@ -176,6 +176,7 @@ class _ListTutorsState extends State<ListTutorsView> {
                       : ListView.builder(
                           shrinkWrap: true,
                           itemCount: _tutorInfos.length,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             // Sort the tutorList by favorite and rating
                             _tutorInfos.sort((a, b) {

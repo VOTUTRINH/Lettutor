@@ -159,6 +159,7 @@ class _SchedulePageState extends State<SchedulePage> {
                     ListView.builder(
                       shrinkWrap: true,
                       itemCount: _bookingInfos.length,
+                      physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         return Container(
                           margin: const EdgeInsets.symmetric(horizontal: 15),

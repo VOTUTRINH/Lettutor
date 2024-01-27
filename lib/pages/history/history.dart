@@ -156,6 +156,7 @@ class _HistoryState extends State<HistoryPage> {
                     ListView.builder(
                       shrinkWrap: true,
                       itemCount: _bookingInfos.length,
+                      physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         return Container(
                           margin: const EdgeInsets.symmetric(horizontal: 15),
